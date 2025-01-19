@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <Fragment>
       <Head>
-        <title>Orgarium - Agriculture Farming React Template</title>
+        <title>Oracle Development Group</title>
         {/*====== Favicon Icon ======*/}
         <link
           rel="shortcut icon"
