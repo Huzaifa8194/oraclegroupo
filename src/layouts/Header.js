@@ -678,6 +678,10 @@ const Menu = () => (
       </li>
 
       <li>
+        <Link href="/">Calculator</Link>
+      </li>
+
+      <li>
         <Link href="/contact">Contact Us</Link>
       </li>
      

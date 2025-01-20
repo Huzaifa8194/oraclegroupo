@@ -191,12 +191,12 @@ const About = () => {
     <div className="row justify-content-center">
       {[
         {
-          imgSrc: "assets/images/team/team1.jpeg",
+          imgSrc: "assets/images/team/team2.jpg",
           name: "Lorne Harari",
           position: "Founding partner",
         },
         {
-          imgSrc: "assets/images/team/team2.jpg",
+          imgSrc: "assets/images/team/team1.jpeg",
           name: "Saul Stricker",
           position: "Global Energy Efficiency Strategist",
         },
@@ -283,7 +283,7 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp" style={{color: 'black'}}>
                   <div className="author-content">
-                    <img src="assets/images/team/team1.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team2.jpg" alt="User Image" />
                     <h4>Lorne Harari</h4>
                     <p>Founding partner</p>
                     <ul className="social-link">
@@ -386,7 +386,7 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team2.jpg" alt="User Image" />
+                    <img src="assets/images/team/team1.jpeg" alt="User Image" />
                     <h4>Paul Orsenigo</h4>
                     <p>Strategic Consultant</p>
                     <ul className="social-link">

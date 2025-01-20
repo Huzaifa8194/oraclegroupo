@@ -26,6 +26,10 @@ const MobileHeader = () => {
       <li>
         <Link href="/">Shop</Link>
       </li>
+      <li>
+        <Link href="/">Calculator</Link>
+      </li>
+
 
       <li>
         <Link href="/contact">Contact Us</Link>
