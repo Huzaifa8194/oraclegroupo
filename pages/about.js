@@ -386,7 +386,7 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team1.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team4.jpeg" alt="User Image" />
                     <h4>Paul Orsenigo</h4>
                     <p>Strategic Consultant</p>
                     <ul className="social-link">
@@ -475,7 +475,7 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team3.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team1.jpeg" alt="User Image" />
                     <h4>Saul Stricker</h4>
                     <p> Global Energy Efficiency Strategist</p>
                     <ul className="social-link">
@@ -597,7 +597,7 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team4.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team3.jpeg" alt="User Image" />
                     <h4>Christopher Bregman</h4>
                     <p>Partner</p>
                     <ul className="social-link">
