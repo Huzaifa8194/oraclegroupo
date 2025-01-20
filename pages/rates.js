@@ -4,13 +4,38 @@ import Slider from "react-slick";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
 import { testimonialSliderThree } from "../src/sliderProps";
+import { useEffect } from "react";
 
 const Counter = dynamic(() => import("../src/components/Counter"), {
   ssr: false,
 });
 const Farmers = () => {
+  useEffect(() => {
+    const updateBackground = () => {
+      const skillWrapper = document.getElementById("skillWrapper");
+      if (window.innerWidth < 1000) {
+        skillWrapper.style.backgroundImage = "none";
+        skillWrapper.style.backgroundColor = "#1F1E17";
+      } else {
+        skillWrapper.style.backgroundImage =
+          "url(assets/images/bg/yearsofexp.png)";
+        skillWrapper.style.backgroundColor = "transparent";
+      }
+    };
+
+    // Run on load
+    updateBackground();
+
+    // Add event listener for resize
+    window.addEventListener("resize", updateBackground);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", updateBackground);
+    };
+  }, []);
   return (
-    <Layout header= {4}>
+    <Layout header={4}>
       <PageBanner pageName={"Custom-Tailored Hosting Rates"} />
       {/* <section className="farmers-team_page pt-170 pb-130">
         <div className="container">
@@ -38,12 +63,18 @@ const Farmers = () => {
       </section> */}
       {/*====== End Farmers Section ======*/}
       {/*====== Start Skill Section ======*/}
-      <section className="skill-section mt-100 pt-130 pb-90">
+      <section className="skill-section mt-100 pt-50 pb-90">
         <div className="container-fluid">
-          <div
-            className="skill-wrapper-one pb-90 bg_cover"
-            style={{ backgroundImage: "url(assets/images/bg/yearsofexp.png)" }}
-          >
+        <div
+        id = "skillWrapper"
+  className="skill-wrapper-one pb-90 bg_cover"
+  style={{
+    backgroundImage: "url(assets/images/bg/yearsofexp.png)",
+    backgroundSize: "cover", // Ensures the image covers the entire div
+    backgroundPosition: "center", // Centers the image
+    backgroundRepeat: "no-repeat", // Prevents repetition of the image
+  }}
+>
             <div className="container">
               <div className="row align-items-end">
                 <div className="col-lg-5">
@@ -97,7 +128,7 @@ const Farmers = () => {
                     <div className="section-title section-title-left mb-30">
                       <h2>Custom-Tailored Hosting Rates</h2>
                     </div>
-                    <p>
+                    <p style={{fontSize: '1.2em', textAlign: 'justify'}}>
                       At the heart of our mission is providing sustainable and
                       cost-effective power purchasing solutions that translate
                       into the most competitive, all-inclusive hosting rates in
@@ -118,20 +149,28 @@ const Farmers = () => {
                       brings over 60 years of expertise in energy optimization,
                       power reliability, and technical consulting across 12
                       countries.
-
-                      <br/>
-                      <br/>
-                      With us, you can be confident your operation is supported by industry-leading efficiency and innovation.
+                      <br />
+                      <br />
+                      With us, you can be confident your operation is supported
+                      by industry-leading efficiency and innovation.
                     </p>
-                   
-                  
-                    <div className="skill-button">
+
+                    <div
+                      className="skill-button"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "20px", // Spacing between buttons
+                        marginTop: "20px", // Optional spacing from the content above
+                      }}
+                    >
                       <a href="#" className="main-btn bordered-btn">
-                       Contact Us
+                        Contact Us
                       </a>
 
-                      <a href="#" className="main-btn bordered-btn ml-10">
-                       Visit Shop
+                      <a href="#" className="main-btn bordered-btn">
+                        Visit Shop
                       </a>
                     </div>
                   </div>
@@ -145,6 +184,8 @@ const Farmers = () => {
       {/*====== Start Testimonial Section ======*/}
       
     </Layout>
+
+    
   );
 };
 export default Farmers;

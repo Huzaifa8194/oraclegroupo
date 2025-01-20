@@ -20,7 +20,7 @@ const MobileHeader = () => {
       </li>
 
       <li>
-        <Link href="/about">Start Mining</Link>
+        <Link href="/rates">Start Mining</Link>
       </li>
 
       <li>

@@ -1545,7 +1545,7 @@ button {
 }
 .navigation-three .site-branding .brand-logo {
  
-  max-width: 190px;
+  width: 190px;
   background-color: #eece38;
   border-radius: 7px;
 }
@@ -1633,12 +1633,16 @@ button {
 }
 .navigation-four .site-branding .brand-logo {
   background-color: #1F1E17;
-  width: 190px;
+  max-width: 190px;
   border: 1px solid #3e3b2a;
 }
 @media (max-width: 1199px) {
   .navigation-four .site-branding .brand-logo {
     padding: 10px 15px;
+    max-height: 100px;
+    background-color: transparent;
+    border: none;
+    margin-top: -10%;
   }
 }
 .navigation-four .site-branding .sticky-logo {
@@ -1751,6 +1755,8 @@ button {
 .navigation-four.sticky .site-branding .sticky-logo {
   display: block;
   width: 90px;
+  max-height: 50px;
+  margin-top: -27px;
 }
 
 /*=========================
@@ -6070,6 +6076,9 @@ button {
 .blog-details-wrapper .post-content {
   padding: 0px 60px 45px;
   border: 1px solid rgba(31, 30, 23, 0.071);
+  -webkit-box-shadow: 0px 10px 60px 0px rgba(109, 109, 109, 0.15);
+  box-shadow: 0px 10px 60px 0px rgba(109, 109, 109, 0.15);
+  padding-top: 60px;
 }
 @media (max-width: 767px) {
   .blog-details-wrapper .post-content {
@@ -6593,11 +6602,15 @@ button {
 }
 .sidebar-widget-area .widget.author-widget {
   border: none;
-  background-color: #1f1e17;
+  background-color: #fff;
   padding: 50px 30px 40px;
+  -webkit-box-shadow: 0px 10px 60px 0px rgba(109, 109, 109, 0.15);
+  box-shadow: 0px 10px 60px 0px rgba(109, 109, 109, 0.15);
+  color: black;
 }
 .sidebar-widget-area .widget.author-widget .author-content {
   text-align: center;
+  color: black;
 }
 .sidebar-widget-area .widget.author-widget .author-content img {
   display: -webkit-inline-box;
@@ -6609,11 +6622,11 @@ button {
   margin-bottom: 30px;
 }
 .sidebar-widget-area .widget.author-widget .author-content h4 {
-  color: #fff;
+  color: black;
   margin-bottom: 10px;
 }
 .sidebar-widget-area .widget.author-widget .author-content p {
-  color: rgba(255, 255, 255, 0.7);
+  color: black;
   margin-bottom: 20px;
 }
 .sidebar-widget-area .widget.author-widget .author-content ul.social-link li {
@@ -6634,8 +6647,8 @@ button {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(20, 10, 10, 0.7);
+  color: rgb(255, 232, 232);
 }
 .sidebar-widget-area
   .widget.author-widget

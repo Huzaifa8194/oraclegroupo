@@ -6,9 +6,7 @@ const PageBanner = ({ pageName, pageTitle }) => {
       className="page-banner bg_cover position-relative z-1"
       style={{ backgroundImage: "url(assets/images/bg/miner.png)" }}
     >
-      <div className="brand-card text-center" >
-        <img src="assets/images/logo/oraclelogo.png" alt="icon" style={{width: '250px'}} />
-      </div>
+      
       <div className="container">
         <div className="row">
           <div className="col-lg-10">

@@ -467,11 +467,11 @@ const Header4 = ({ overlayPanel, togglePanel }) => (
               </Link>
             </div>
             <div className="nav-inner-menu">
-              <div className="bar-item">
+              {/* <div className="bar-item">
                 <a className="c-pointer" onClick={() => togglePanel()}>
                   <img src="assets/images/bar-2.png" alt="" />
                 </a>
-              </div>
+              </div> */}
               <div className="nav-menu">
                 {/*=== Mobile Logo ===*/}
                 <div className="mobile-logo mb-30 d-block d-xl-none text-center">
