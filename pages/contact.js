@@ -1,10 +1,72 @@
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 import Slider from "react-slick";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
 import { logoSlider } from "../src/sliderProps";
+
+import { toast } from "react-toastify";
+
+const auth = getAuth();
+const db = getFirestore();
+
 const Contact = () => {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [error, setError] = useState("");
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push("/login"); // Redirect to login if not logged in
+      }
+    });
+  }, [router]);
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const user = auth.currentUser;
+    if (!user) {
+      setError("You must be logged in to send a message.");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      // Add the message to Firestore
+      await addDoc(collection(db, "Messages"), {
+        name: formData.name,
+        email: user.email, // Use logged-in user's email
+        message: formData.message,
+        timestamp: new Date(),
+      });
+
+      toast.info("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" }); // Reset form
+    } catch (err) {
+      console.error("Error sending message:", err);
+      setError("Failed to send your message. Please try again.");
+    }
+  };
+
   return (
-    <Layout header= {4}>
+    <Layout header={4}>
       <PageBanner pageName={"Contact Us"} />
       <section className="contact-information-one p-r z-1 pt-215 pb-130">
         <div className="information-img_one wow fadeInRight">
@@ -16,9 +78,7 @@ const Contact = () => {
               <div className="contact-two_information-box">
                 <div className="section-title section-title-left mb-50 wow fadeInUp">
                   <span className="sub-title">Get In Touch</span>
-                  <h2>
-                    We’re Ready to Help You! Have any Inquiries?
-                  </h2>
+                  <h2>We’re Ready to Help You! Have any Inquiries?</h2>
                 </div>
                 <div className="row">
                   <div className="col-lg-4 col-md-6 col-sm-12">
@@ -70,7 +130,7 @@ const Contact = () => {
                 <div className="row">
                   <div className="col-lg-8">
                     <p>
-                    Complimentary visits to our facilities, contact us to inquire.
+                      Complimentary visits to our facilities, contact us to inquire.
                     </p>
                   </div>
                 </div>
@@ -80,14 +140,21 @@ const Contact = () => {
         </div>
       </section>
       {/*====== End Contact Information section ======*/}
-      {/*====== Start Map section ======*/}
+
+      {/*====== Start Map section ======*/} 
       <section className="contact-page-map">
         <div className="map-box">
-          <iframe src="https://maps.google.com/maps?q=new%20york&t=&z=13&ie=UTF8&iwloc=&output=embed" />
+          <iframe
+            src="https://maps.google.com/maps?q=new%20york&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            style={{ border: 0, width: "100%", height: "400px" }}
+            allowFullScreen=""
+            loading="lazy"
+          ></iframe>
         </div>
       </section>
       {/*====== End Map section ======*/}
-      {/*====== Start Contact Section ======*/}
+
+      {/*====== Start Contact Section ======*/} 
       <section className="contact-three pb-70 wow fadeInUp">
         <div className="container">
           <div className="row justify-content-end">
@@ -95,17 +162,19 @@ const Contact = () => {
               <div className="contact-three_content-box">
                 <div className="section-title section-title-left mb-60">
                   <span className="sub-title">Get In Touch</span>
-                  <h2> Send Us A Message</h2>
+                  <h2>Send Us A Message</h2>
                 </div>
                 <div className="contact-form">
-                  <form onSubmit={(e) => e.preventDefault()}>
+                  <form onSubmit={handleSubmit}>
                     <div className="form_group">
                       <input
                         type="text"
                         className="form_control"
                         placeholder="Full Name"
                         name="name"
-                        required=""
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
                     <div className="form_group">
@@ -114,7 +183,9 @@ const Contact = () => {
                         className="form_control"
                         placeholder="Email Address"
                         name="email"
-                        required=""
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
                     <div className="form_group">
@@ -122,11 +193,14 @@ const Contact = () => {
                         className="form_control"
                         placeholder="Write Message"
                         name="message"
-                        defaultValue={""}
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
+                    {error && <p className="error-text">{error}</p>}
                     <div className="form_group">
-                      <button className="main-btn btn-yellow">
+                      <button className="main-btn btn-yellow" type="submit">
                         Send Message
                       </button>
                     </div>
@@ -138,7 +212,8 @@ const Contact = () => {
         </div>
       </section>
       {/*====== End Contact Section ======*/}
-      {/*====== Start Partner Section ======*/}
+
+      {/*====== Start Partner Section ======*/} 
       <section className="partners-one p-r z-1 pt-50 pb-130">
         <div className="container">
           <div className="row justify-content-center">
@@ -151,58 +226,32 @@ const Contact = () => {
           <Slider {...logoSlider} className="partner-slider-one wow fadeInDown">
             <div className="partner-item-two">
               <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-7.png"
-                  alt="partner image"
-                />
+                <img src="assets/images/partner/img-7.png" alt="partner image" />
               </div>
             </div>
             <div className="partner-item-two">
               <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-8.png"
-                  alt="partner image"
-                />
+                <img src="assets/images/partner/img-8.png" alt="partner image" />
               </div>
             </div>
             <div className="partner-item-two">
               <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-9.png"
-                  alt="partner image"
-                />
+                <img src="assets/images/partner/img-9.png" alt="partner image" />
               </div>
             </div>
             <div className="partner-item-two">
               <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-10.png"
-                  alt="partner image"
-                />
+                <img src="assets/images/partner/img-10.png" alt="partner image" />
               </div>
             </div>
             <div className="partner-item-two">
               <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-11.png"
-                  alt="partner image"
-                />
+                <img src="assets/images/partner/img-11.png" alt="partner image" />
               </div>
             </div>
             <div className="partner-item-two">
               <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-12.png"
-                  alt="partner image"
-                />
-              </div>
-            </div>
-            <div className="partner-item-two">
-              <div className="partner-img">
-                <img
-                  src="assets/images/partner/img-10.png"
-                  alt="partner image"
-                />
+                <img src="assets/images/partner/img-12.png" alt="partner image" />
               </div>
             </div>
           </Slider>
@@ -211,4 +260,5 @@ const Contact = () => {
     </Layout>
   );
 };
+
 export default Contact;

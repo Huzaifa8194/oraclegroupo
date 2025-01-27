@@ -4,6 +4,11 @@ import useWindowSize from "../useWindowSize";
 import { stickyNav } from "../utils";
 import MobileHeader from "./MobileHeader";
 import OffcanvasPanel from "./OffcanvasPanel";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig";
+
+import { toast } from "react-toastify";
 
 const Header = ({ header }) => {
   useEffect(() => {
@@ -52,6 +57,14 @@ const Header = ({ header }) => {
     case 4:
       return (
         <Header4
+          overlayPanel={overlayPanel}
+          togglePanel={() => togglePanel()}
+        />
+      );
+
+    case 5:
+      return (
+        <Header5
           overlayPanel={overlayPanel}
           togglePanel={() => togglePanel()}
         />
@@ -400,135 +413,337 @@ const Header3 = ({ overlayPanel, togglePanel }) => (
   </Fragment>
 );
 
-const Header4 = ({ overlayPanel, togglePanel }) => (
-  <Fragment>
-    <OffcanvasPanel overlyPanel={overlayPanel} togglePanel={togglePanel} />
-    <header className="header-area">
-      <div className="header-top-bar top-bar-two white-bg">
-        <div className="container-fluid">
-          <div className="row align-items-center">
-            <div className="col-xl-6 col-lg-12 col-md-12 col-6">
-              <div className="top-bar-left d-flex align-items-center">
-                <span className="lang-dropdown">
-                  <select className="wide">
-                    <option value={1}>English</option>
-                    <option value={2}>French</option>
-                  </select>
+const Header4 = ({ overlayPanel, togglePanel }) => {
+  const [marketCap, setMarketCap] = useState(null);
+  const [btcVolume, setBtcVolume] = useState(null);
+  const [miningDifficulty, setMiningDifficulty] = useState(null);
+  const [btcPrice, setBtcPrice] = useState(null);
+  const [btcDominance, setBtcDominance] = useState(null);
+  const [btcMarketCap, setBtcMarketCap] = useState(null);
+
+  useEffect(() => {
+    const fetchCryptoData = async () => {
+      try {
+        // Fetch Global Data and BTC Stats from CoinGecko API
+        const coingeckoResponse = await fetch(
+          "https://api.coingecko.com/api/v3/global"
+        );
+        const coingeckoData = await coingeckoResponse.json();
+
+        setMarketCap(
+          `$${coingeckoData.data.total_market_cap.usd.toLocaleString()}`
+        );
+        setBtcVolume(
+          `$${coingeckoData.data.total_volume.usd.toLocaleString()}`
+        );
+        setBtcDominance(`${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`);
+        setBtcMarketCap(
+          `$${(coingeckoData.data.total_market_cap.btc || 0).toLocaleString()}`
+        );
+
+        // Fetch Mining Difficulty from Blockchain.com API
+        const blockchainResponse = await fetch(
+          "https://blockchain.info/q/getdifficulty"
+        );
+        const miningDifficultyData = await blockchainResponse.text();
+        setMiningDifficulty(parseFloat(miningDifficultyData).toFixed(2));
+
+        // Fetch Live Bitcoin Price
+        const btcPriceResponse = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+        );
+        const btcPriceData = await btcPriceResponse.json();
+        setBtcPrice(`$${btcPriceData.bitcoin.usd.toLocaleString()}`);
+      } catch (error) {
+        console.error("Error fetching cryptocurrency data:", error);
+      }
+    };
+
+    fetchCryptoData();
+  }, []);
+
+  return (
+    <Fragment>
+      <OffcanvasPanel overlyPanel={overlayPanel} togglePanel={togglePanel} />
+      <header className="header-area">
+        {/* Cryptocurrency Data Bar */}
+        <div className="crypto-data-bar white-bg py-2">
+          <div className="container-fluid">
+            <div className="row text-center">
+              <div className="col">
+                <span className="crypto-data-item">
+                  <strong className="mb-2">{marketCap || "Loading..."}</strong>
+                  
+                  Total Market Cap
                 </span>
               </div>
-            </div>
-            <div className="col-xl-6 col-lg-12 col-md-12 col-6">
-              <div className="top-bar-right">
-                <span className="text">
-                  <i className="far fa-clock" />
-                  Opening Hours : Sunday- Friday, 08:00 am - 05:00pm
+              <div className="col">
+                <span className="crypto-data-item">
+                  <strong className="mb-2">{btcVolume || "Loading..."}</strong>
+                 
+                  BTC 24h Vol
                 </span>
-                <ul className="social-link">
-                  <li>
-                    <a href="#">
-                      <i className="fab fa-facebook-f" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i className="fab fa-twitter" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i className="fab fa-linkedin" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i className="fab fa-youtube" />
-                    </a>
-                  </li>
-                </ul>
+              </div>
+              <div className="col">
+                <span className="crypto-data-item">
+                  <strong className="mb-2">{miningDifficulty || "Loading..."}</strong>
+                 
+                  Mining Difficulty
+                </span>
+              </div>
+              <div className="col">
+                <span className="crypto-data-item">
+                  <strong className="mb-2">{btcPrice || "Loading..."}</strong>
+                  
+                  Live Bitcoin Price
+                </span>
+              </div>
+              <div className="col">
+                <span className="crypto-data-item">
+                  <strong className="mb-2">{btcDominance || "Loading..."}</strong>
+                 
+                  BTC Dominance
+                </span>
+              </div>
+              <div className="col">
+                <span className="crypto-data-item">
+                  <strong className="mb-2">{btcMarketCap || "Loading..."}</strong>
+                
+                  BTC Market Cap
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="header-navigation navigation-four">
-        <div className="nav-overlay" />
-        <div className="container-fluid">
-          <div className="primary-menu">
-            <div className="site-branding">
-              <Link href="/">
-                <a className="brand-logo">
-                  <img src="assets/images/logo/oraclelogo.png" alt="Site Logo" />
-                </a>
-              </Link>
-              <Link href="/">
-                <a className="sticky-logo">
-                  <img src="assets/images/logo/oraclelogo.png" alt="Site Logo" />
-                </a>
-              </Link>
-            </div>
-            <div className="nav-inner-menu">
-              {/* <div className="bar-item">
-                <a className="c-pointer" onClick={() => togglePanel()}>
-                  <img src="assets/images/bar-2.png" alt="" />
-                </a>
-              </div> */}
-              <div className="nav-menu">
-                {/*=== Mobile Logo ===*/}
-                <div className="mobile-logo mb-30 d-block d-xl-none text-center">
-                  <Link href="/">
-                    <a className="brand-logo">
-                      <img
-                        src="assets/images/logo/oraclelogo.png"
-                        alt="Site Logo"
-                      />
-                    </a>
-                  </Link>
-                </div>
-                {/*=== Navbar Call Button ===*/}
-                <div className="call-button text-center">
-                  <span>
-                    <i className="far fa-phone" />
-                    <a href="tel:+012(345)678">+012 (345) 678</a>
+
+        {/* Top Bar */}
+        <div className="header-top-bar top-bar-two white-bg">
+          <div className="container-fluid">
+            <div className="row align-items-center">
+              <div className="col-xl-6 col-lg-12 col-md-12 col-6">
+                <div className="top-bar-left d-flex align-items-center">
+                  <span className="lang-dropdown">
+                    <select className="wide">
+                      <option value={1}>English</option>
+                      <option value={2}>French</option>
+                    </select>
                   </span>
-                </div>
-                {/*=== Main Menu ===*/}
-                <Menu />
-                <MobileHeader />
-                {/*=== Navbar Menu Button ===*/}
-                <div className="menu-button">
-                  <Link href="/contact">
-                    <a className="main-btn bordered-btn">Get a Quote</a>
-                  </Link>
                 </div>
               </div>
-              {/*=== Nav Right Item ===*/}
+              <div className="col-xl-6 col-lg-12 col-md-12 col-6">
+                <div className="top-bar-right">
+                  <span className="text">
+                    <i className="far fa-clock" />
+                    Opening Hours : Sunday - Friday, 08:00 am - 05:00 pm
+                  </span>
+                  <ul className="social-link">
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-facebook-f" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-twitter" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-linkedin" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-youtube" />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="header-navigation navigation-four">
+          <div className="nav-overlay" />
+          <div className="container-fluid">
+            <div className="primary-menu">
+              {/* Branding */}
+              <div className="site-branding">
+                <Link href="/">
+                  <a className="brand-logo">
+                    <img
+                      src="/assets/images/logo/oraclelogo.png"
+                      alt="Site Logo"
+                    />
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="sticky-logo">
+                    <img
+                      src="assets/images/logo/oraclelogo.png"
+                      alt="Sticky Logo"
+                    />
+                  </a>
+                </Link>
+              </div>
+
+              {/* Main Menu */}
+              <div className="nav-inner-menu">
+                <div className="bar-item">
+                  <a className="c-pointer" onClick={() => togglePanel()}>
+                    <img src="assets/images/bar-2.png" alt="Toggle Menu" />
+                  </a>
+                </div>
+                <div className="nav-menu">
+                  <Menu />
+                  <MobileHeader />
+                </div>
+              </div>
+
+              {/* Nav Right Item */}
               <div className="nav-right-item d-flex align-items-center">
-                <div className="call-button">
-                  <span>
-                    <i className="far fa-phone" />
-                    <a href="tel:+012(345)678">+012 (345) 678</a>
+                <div className="navbar-toggler"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <style jsx>{`
+        .crypto-data-bar {
+          border-bottom: 1px solid #1F1E17;
+          background-color: #0f0f0c;
+        }
+        .crypto-data-item {
+          font-size: 14px;
+          color: #fff;
+        }
+        .crypto-data-item strong {
+          display: block;
+          font-size: 16px;
+          color: #fff;
+        }
+      `}</style>
+    </Fragment>
+  );
+};
+
+const Header5 = ({ overlayPanel, togglePanel }) => {
+  return (
+    <Fragment>
+      <OffcanvasPanel overlyPanel={overlayPanel} togglePanel={togglePanel} />
+      <header className="header-area">
+        {/* Top Bar */}
+        <div className="header-top-bar top-bar-two white-bg">
+          <div className="container-fluid">
+            <div className="row align-items-center">
+              <div className="col-xl-6 col-lg-12 col-md-12 col-6">
+                <div className="top-bar-left d-flex align-items-center">
+                  <span className="lang-dropdown">
+                    <select className="wide">
+                      <option value={1}>English</option>
+                      <option value={2}>French</option>
+                    </select>
                   </span>
                 </div>
-                <div className="menu-button">
+              </div>
+              <div className="col-xl-6 col-lg-12 col-md-12 col-6">
+                <div className="top-bar-right">
+                  <span className="text">
+                    <i className="far fa-clock" />
+                    Opening Hours : Sunday - Friday, 08:00 am - 05:00 pm
+                  </span>
+                  <ul className="social-link">
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-facebook-f" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-twitter" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-linkedin" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="fab fa-youtube" />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="header-navigation navigation-four">
+          <div className="nav-overlay" />
+          <div className="container-fluid">
+            <div className="primary-menu">
+              {/* Branding */}
+              <div className="site-branding">
+                <Link href="/">
+                  <a className="brand-logo">
+                    <img
+                      src="/assets/images/logo/oraclelogo.png"
+                      alt="Site Logo"
+                    />
+                  </a>
+                </Link>
+                <Link href="/">
+                  <a className="sticky-logo">
+                    <img
+                      src="assets/images/logo/oraclelogo.png"
+                      alt="Sticky Logo"
+                    />
+                  </a>
+                </Link>
+              </div>
+
+              {/* Main Menu */}
+              <div className="nav-inner-menu">
+                <div className="bar-item">
+                  <a className="c-pointer" onClick={() => togglePanel()}>
+                    <img src="assets/images/bar-2.png" alt="Toggle Menu" />
+                  </a>
+                </div>
+                <div className="nav-menu">
+                  <Menu2 /> {/* Replacing Menu Component */}
+                  <MobileHeader />
+                  
+                </div>
+              </div>
+
+              {/* Nav Right Item */}
+              <div className="nav-right-item d-flex align-items-center">
+               
+                {/* <div className="menu-button">
                   <Link href="/contact">
                     <a className="main-btn bordered-btn bordered-yellow">
                       Get a Quote
                     </a>
                   </Link>
-                </div>
+                </div> */}
                 <div className="navbar-toggler">
+                  {/* <span />
                   <span />
-                  <span />
-                  <span />
+                  <span /> */}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </header>
-  </Fragment>
-);
+      </header>
+    </Fragment>
+  );
+};
 
 const DefaultHeader = () => (
   <header className="header-area">
@@ -659,10 +874,47 @@ const DefaultHeader = () => (
   </header>
 );
 
-const Menu = () => (
-  <nav className="main-menu d-none d-xl-block">
-    <ul>
-    <li>
+const Menu = () => {
+  const [user, setUser] = useState(null); // User state
+  const [isAdmin, setIsAdmin] = useState(false); // Admin role state
+  const [dropdownVisible, setDropdownVisible] = useState(false); // Dropdown visibility
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+
+        // Check if the user has an admin role
+        const userDoc = await getDoc(doc(db, "Users", currentUser.uid));
+        if (userDoc.exists() && userDoc.data().role === "admin") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } else {
+        setUser(null);
+        setIsAdmin(false);
+      }
+    });
+
+    return () => unsubscribe(); // Clean up listener on component unmount
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.info("Logged out successfully!");
+    } catch (err) {
+      console.error("Error logging out:", err.message);
+    }
+  };
+
+
+
+  return (
+    <nav className="main-menu d-none d-xl-block">
+      <ul>
+      <li>
         <Link href="/">Home</Link>
       </li>
       <li>
@@ -672,21 +924,169 @@ const Menu = () => (
       <li>
         <Link href="/rates">Start Mining</Link>
       </li>
-
-      <li>
-        <Link href="/">Shop</Link>
-      </li>
-
-      <li>
-        <Link href="/">Calculator</Link>
+   
+        <li className="menu-item has-children">
+          <a href="#">Shop</a>
+          <ul className="sub-menu">
+            <li>
+              <Link href="products">Our Products</Link>
+            </li>
+           
+            <li>
+              <Link href="cart">Cart</Link>
+            </li>
+            <li>
+              <Link href="checkout">Checkout</Link>
+            </li>
+          </ul>
+        </li>
+       
+        <li>
+        <Link href="/calculator">Calculator</Link>
       </li>
 
       <li>
         <Link href="/contact">Contact Us</Link>
       </li>
-     
-    
-  
-    </ul>
-  </nav>
-);
+
+        {/* Login/Logout/User Dropdown */}
+        
+          {user ? (
+            <>
+             <li className="menu-item has-children">
+          <a href="#">{user.email}</a>
+          <ul className="sub-menu">
+            <li>
+              <Link href="cart">Cart</Link>
+            </li>
+            <li>
+              <Link href="orders">My Orders</Link>
+            </li>
+            <li>
+              <a href = "" onClick={handleLogout}>Log Out</a>
+            </li>
+          </ul>
+        </li>
+       
+        
+
+          
+              {isAdmin && (
+                <Link href="/addminer">
+                  <a className="main-btn btn-yellow">
+                    Admin Panel
+                  </a>
+                </Link>
+              )}
+            </>
+          ) : (
+            <Link href="/login">
+              <a className="main-btn btn-yellow">Login</a>
+            </Link>
+          )}
+       
+      </ul>
+    </nav>
+  );
+};
+
+const Menu2 = () => {
+  const [user, setUser] = useState(null); // User state
+  const [isAdmin, setIsAdmin] = useState(false); // Admin role state
+  const [dropdownVisible, setDropdownVisible] = useState(false); // Dropdown visibility
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+
+        // Check if the user has an admin role
+        const userDoc = await getDoc(doc(db, "Users", currentUser.uid));
+        if (userDoc.exists() && userDoc.data().role === "admin") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } else {
+        setUser(null);
+        setIsAdmin(false);
+      }
+    });
+
+    return () => unsubscribe(); // Clean up listener on component unmount
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.info("Logged out successfully!");
+    } catch (err) {
+      console.error("Error logging out:", err.message);
+    }
+  };
+
+
+
+  return (
+    <nav className="main-menu d-none d-xl-block">
+      <ul>
+
+
+
+      <li>
+          <Link href="/addminer">Add Miner</Link>
+        </li>
+
+        <li>
+          <Link href="/minerdetail">Manage Miner</Link>
+        </li>
+
+        <li>
+          <Link href="/manageorders">Manage Orders</Link>
+        </li>
+
+        <li>
+          <Link href="/messages">View Messages</Link>
+        </li>
+
+      
+        {/* Login/Logout/User Dropdown */}
+        
+          {user ? (
+            <>
+             <li className="menu-item has-children">
+          <a href="#">{user.email}</a>
+          <ul className="sub-menu">
+            <li>
+              <Link href="cart">Cart</Link>
+            </li>
+            <li>
+              <Link href="orders">My Orders</Link>
+            </li>
+            <li>
+              <a href = "" onClick={handleLogout}>Log Out</a>
+            </li>
+          </ul>
+        </li>
+       
+        
+
+          
+              {isAdmin && (
+                <Link href="/">
+                  <a className="main-btn btn-yellow">
+                    User Panel
+                  </a>
+                </Link>
+              )}
+            </>
+          ) : (
+            <Link href="/login">
+              <a className="main-btn btn-yellow">Login</a>
+            </Link>
+          )}
+       
+      </ul>
+    </nav>
+  );
+};

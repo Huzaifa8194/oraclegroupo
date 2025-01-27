@@ -1,170 +1,177 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db, auth } from "../src/firebaseConfig";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
+import { FaTrash, FaCartPlus, FaTruck } from "react-icons/fa";
+
 const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user and cart data
+  useEffect(() => {
+    const fetchCart = async (userId) => {
+      try {
+        const userDoc = await getDoc(doc(db, "Users", userId));
+        if (userDoc.exists()) {
+          const { cart } = userDoc.data();
+          setCartItems(cart || []);
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        fetchCart(currentUser.uid);
+      } else {
+        setUser(null);
+        setCartItems([]);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Update cart item quantity
+  const updateQuantity = async (index, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    const updatedCartItems = [...cartItems];
+    updatedCartItems[index].quantity = newQuantity;
+
+    setCartItems(updatedCartItems);
+
+    try {
+      const userRef = doc(db, "Users", user.uid);
+      await updateDoc(userRef, { cart: updatedCartItems });
+    } catch (error) {
+      console.error("Error updating cart:", error);
+    }
+  };
+
+  // Remove item from cart
+  const removeItem = async (index) => {
+    const updatedCartItems = cartItems.filter((_, i) => i !== index);
+
+    setCartItems(updatedCartItems);
+
+    try {
+      const userRef = doc(db, "Users", user.uid);
+      await updateDoc(userRef, { cart: updatedCartItems });
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
+
+  // Calculate totals
+  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const shippingFee = subtotal > 0 ? 50 : 0;
+  const total = subtotal + shippingFee;
+
+  if (loading) {
+    return <p>Loading cart...</p>;
+  }
+
   return (
-    <Layout>
+    <Layout header = {4}>
       <PageBanner pageName={"Cart"} />
-      <section className="cart-section pt-170 pb-130">
+      <section className="cart-section pt-100 pb-100 mt-70 mb-70">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="cart-wrapper">
-                <div className="cart-table table-responsive">
-                  <table className="table">
-                    <tbody>
-                      <tr>
-                        <td className="remove">
-                          <a href="#">
-                            <i className="fas fa-trash-alt" />
-                          </a>
-                        </td>
-                        <td className="thumbnail-title">
-                          <img
-                            src="assets/images/products/product-thumb-4.jpg"
-                            alt=""
-                          />
-                          <span className="title">Strawberry Fruits</span>
-                        </td>
-                        <td className="price">$25</td>
-                        <td className="quantity">
-                          <div className="quantity-input">
-                            <button className="quantity-down">-</button>
-                            <input
-                              className="quantity"
-                              type="text"
-                              defaultValue={1}
-                              name="quantity"
-                            />
-                            <button className="quantity-up">+</button>
-                          </div>
-                        </td>
-                        <td className="subtotal">$25</td>
-                      </tr>
-                      <tr>
-                        <td className="remove">
-                          <a href="#">
-                            <i className="fas fa-trash-alt" />
-                          </a>
-                        </td>
-                        <td className="thumbnail-title">
-                          <img
-                            src="assets/images/products/product-thumb-5.jpg"
-                            alt=""
-                          />
-                          <span className="title">Apple Fruits</span>
-                        </td>
-                        <td className="price">$25</td>
-                        <td className="quantity">
-                          <div className="quantity-input">
-                            <button className="quantity-down">-</button>
-                            <input
-                              className="quantity"
-                              type="text"
-                              defaultValue={1}
-                              name="quantity"
-                            />
-                            <button className="quantity-up">+</button>
-                          </div>
-                        </td>
-                        <td className="subtotal">$35</td>
-                      </tr>
-                      <tr>
-                        <td className="remove">
-                          <a href="#">
-                            <i className="fas fa-trash-alt" />
-                          </a>
-                        </td>
-                        <td className="thumbnail-title">
-                          <img
-                            src="assets/images/products/product-thumb-6.jpg"
-                            alt=""
-                          />
-                          <span className="title">Tomato vegetable</span>
-                        </td>
-                        <td className="price">$25</td>
-                        <td className="quantity">
-                          <div className="quantity-input">
-                            <button className="quantity-down">-</button>
-                            <input
-                              className="quantity"
-                              type="text"
-                              defaultValue={1}
-                              name="quantity"
-                            />
-                            <button className="quantity-up">+</button>
-                          </div>
-                        </td>
-                        <td className="subtotal">$55</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="cart-middle mt-40 mb-20">
-                <div className="row">
-                  <div className="col-lg-6">
-                    <div className="coupon-box mb-40">
-                      <form onSubmit={(e) => e.preventDefault()}>
-                        <div className="form_group">
-                          <input
-                            type="text"
-                            className="form_control"
-                            placeholder="Coupon Code"
-                          />
-                          <button className="main-btn btn-yellow">
-                            Appply Coupon
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div className="update-cart float-lg-right mb-40">
-                      <a href="#" className="main-btn btn-yellow mr-2">
-                        Shopping
-                      </a>
-                      <a href="#" className="main-btn btn-yellow">
-                        Update Cart
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="row justify-content-end">
-            <div className="col-lg-5">
-              <div className="shopping-cart-total">
-                <h4 className="title">Cart Totals</h4>
-                <table className="table">
+          {cartItems.length > 0 ? (
+            <>
+              <div className="cart-table-wrapper">
+                <table className="cart-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Subtotal</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    <tr>
-                      <td>Cart Subtotal</td>
-                      <td>$200</td>
-                    </tr>
-                    <tr>
-                      <td>Shipping Fee</td>
-                      <td>$50</td>
-                    </tr>
-                    <tr>
-                      <td className="total">
-                        <span>Order Total</span>
-                      </td>
-                      <td className="total">
-                        <span>$250</span>
-                      </td>
-                    </tr>
+                    {cartItems.map((item, index) => (
+                      <tr key={index}>
+                        <td className="product-info">
+                          <img src={item.imageUrl} alt={item.name} className="product-image" />
+                          <span className="product-name">{item.name}</span>
+                        </td>
+                        <td>${item.price.toFixed(2)}</td>
+                        <td>
+                          <div className="quantity-control">
+                            <button
+                              className="quantity-btn"
+                              onClick={() => updateQuantity(index, item.quantity - 1)}
+                            >
+                              -
+                            </button>
+                            <input
+                              type="number"
+                              value={item.quantity}
+                              onChange={(e) => updateQuantity(index, parseInt(e.target.value))}
+                              className="quantity-input"
+                            />
+                            <button
+                              className="quantity-btn"
+                              onClick={() => updateQuantity(index, item.quantity + 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        <td>${(item.price * item.quantity).toFixed(2)}</td>
+                        <td>
+                          <button
+                            className="remove-btn"
+                            onClick={() => removeItem(index)}
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
-                <button className="main-btn btn-yellow">
-                  Proceed to checkout
-                </button>
               </div>
+              <div className="cart-totals">
+                <h4>Cart Totals</h4>
+                <ul>
+                  <li>
+                    <span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span>
+                  </li>
+                  <li>
+                    <span>Shipping Fee:</span> <span>${shippingFee.toFixed(2)}</span>
+                  </li>
+                  <li className="total">
+                    <span>Total:</span> <span>${total.toFixed(2)}</span>
+                  </li>
+                </ul>
+                <button className="checkout-btn">Proceed to Checkout</button>
+              </div>
+            </>
+          ) : (
+            <div className="empty-cart">
+              <FaCartPlus className="empty-cart-icon" />
+              <h3>Your cart is empty</h3>
+              <p>Start adding items to your cart to see them here.</p>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </Layout>
   );
 };
+
 export default Cart;

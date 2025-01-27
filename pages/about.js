@@ -189,101 +189,112 @@ const About = () => {
       </div>
     </div>
     <div className="row justify-content-center">
-      {[
-        {
-          imgSrc: "assets/images/team/team2.jpg",
-          name: "Lorne Harari",
-          position: "Founding partner",
-        },
-        {
-          imgSrc: "assets/images/team/team1.jpeg",
-          name: "Saul Stricker",
-          position: "Global Energy Efficiency Strategist",
-        },
-        {
-          imgSrc: "assets/images/team/team3.jpeg",
-          name: "Christopher Bregman",
-          position: "Partner",
-        },
-        {
-          imgSrc: "assets/images/team/team4.jpeg",
-          name: "Paul Orsenigo",
-          position: "Strategic Consultant",
-        },
-      ].map((member, index) => (
-        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12" key={index}>
-          <div className="team-member_one text-center mb-40 wow fadeInUp">
-            <div className="member-img" style={{ overflow: "hidden" }}>
-              <img
-                src={member.imgSrc}
-                alt=""
-                style={{
-                  height: "250px",
-                  width: "250px",
-                  objectFit: "cover",
-                  borderRadius: "20px",
-                }}
-              />
-            </div>
-            <div
-              className="member-info"
-              style={{
-                minHeight: "180px", // Set a fixed height for consistency
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <h3 className="title">
-                <Link href="/farmers">
-                  <a style={{ color: "white" }}>{member.name}</a>
-                </Link>
-              </h3>
-              <p className="position">{member.position}</p>
-              <ul className="social-link">
-                <li>
-                  <a href="#">
-                    <i className="fab fa-facebook-f" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-twitter" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-linkedin" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-youtube" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+  {[
+    {
+      imgSrc: "assets/images/team/team2.jpg",
+      name: "Lorne Harari",
+      position: "Founding partner",
+      id: "lorne",
+    },
+    {
+      imgSrc: "assets/images/team/team1.jpeg",
+      name: "Saul Stricker",
+      position: "Global Energy Efficiency Strategist",
+      id: "saul",
+    },
+    {
+      imgSrc: "assets/images/team/team3.jpeg",
+      name: "Christopher Bregman",
+      position: "Partner",
+      id: "christopher",
+    },
+    {
+      imgSrc: "assets/images/team/team4.jpeg",
+      name: "Paul Orsenigo",
+      position: "Strategic Consultant",
+      id: "paul",
+    },
+  ].map((member, index) => (
+    <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12" key={index}>
+      <div className="team-member_one text-center mb-40 wow fadeInUp">
+        <div className="member-img" style={{ overflow: "hidden" }}>
+          <img
+            src={member.imgSrc}
+            alt=""
+            style={{
+              height: "250px",
+              width: "250px",
+              objectFit: "cover",
+              borderRadius: "20px",
+            }}
+          />
         </div>
-      ))}
+        <div
+          className="member-info"
+          style={{
+            minHeight: "180px", // Set a fixed height for consistency
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h3 className="title">
+            <Link href={`#${member.id}`}>
+              <a style={{ color: "white" }}>{member.name}</a>
+            </Link>
+          </h3>
+          <p className="position">{member.position}</p>
+          <ul className="social-link">
+            <li>
+              <a href="#">
+                <i className="fab fa-facebook-f" />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fab fa-twitter" />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fab fa-linkedin" />
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i className="fab fa-youtube" />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  ))}
+</div>
+
   </div>
 </section>
 
 
       {/*====== End Farmers Section ======*/}
 
-      <section className="blog-details-page pt-50 pb-50">
+      <section className="blog-details-page pt-50 pb-50" id = 'lorne' >
         <div className="container">
-          <div className="row">
+       <div className="row">
 
 
           <div className="col-xl-4 col-lg-5">
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp" style={{color: 'black'}}>
                   <div className="author-content">
-                    <img src="assets/images/team/team2.jpg" alt="User Image" />
+                    <img src="assets/images/team/team2.jpg" alt="User Image" 
+                    style={{
+                  height: "250px",
+                  width: "250px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                }} />
                     <h4>Lorne Harari</h4>
                     <p>Founding partner</p>
                     <ul className="social-link">
@@ -312,8 +323,8 @@ const About = () => {
                 </div>
               </div>
             </div>
-            <div className="col-xl-8 col-lg-7">
-              <div className="blog-details-wrapper mb-40 wow fadeInUp">
+            <div className="col-xl-8 col-lg-7" >
+              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{backgroundColor: 'white'}}>
                 <div className="blog-post-item">
                   
                   <div className="post-content">
@@ -373,12 +384,17 @@ const About = () => {
             </div>
 
 
-           
+            </div>
+        </div>
+      </section>
 
 
 
 
 
+      <section className="blog-details-page pt-50 pb-50" id = 'paul' style={{backgroundColor: '#1F1E17'}}>
+        <div className="container">
+       <div className="row">
 
 
 
@@ -386,7 +402,14 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team4.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team4.jpeg" alt="User Image" 
+                     style={{
+                      height: "250px",
+                      width: "250px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}
+                    />
                     <h4>Paul Orsenigo</h4>
                     <p>Strategic Consultant</p>
                     <ul className="social-link">
@@ -418,7 +441,7 @@ const About = () => {
 
 
             <div className="col-xl-8 col-lg-7">
-              <div className="blog-details-wrapper mb-40 wow fadeInUp">
+              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{background:'white'}}>
                 <div className="blog-post-item">
                   <div className="post-content">
                    
@@ -463,19 +486,31 @@ const About = () => {
 
          
 
+            </div>
+        </div>
+      </section>
 
 
 
 
 
-
+      <section className="blog-details-page pt-50 pb-50" id = "saul">
+        <div className="container">
+       <div className="row">
 
 
             <div className="col-xl-4 col-lg-5">
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team1.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team1.jpeg" alt="User Image"
+                    
+                    style={{
+                      height: "250px",
+                      width: "250px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}/>
                     <h4>Saul Stricker</h4>
                     <p> Global Energy Efficiency Strategist</p>
                     <ul className="social-link">
@@ -578,6 +613,9 @@ const About = () => {
 
 
 
+            </div>
+        </div>
+      </section>
 
 
 
@@ -590,6 +628,9 @@ const About = () => {
 
 
 
+      <section className="blog-details-page pt-50 pb-50 " id  = 'christopher' style={{backgroundColor: '#1F1E17', marginBottom: '0.5px'}}>
+        <div className="container">
+       <div className="row">
 
 
 
@@ -597,7 +638,13 @@ const About = () => {
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team3.jpeg" alt="User Image" />
+                    <img src="assets/images/team/team3.jpeg" alt="User Image" 
+                     style={{
+                      height: "250px",
+                      width: "250px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}/>
                     <h4>Christopher Bregman</h4>
                     <p>Partner</p>
                     <ul className="social-link">
@@ -631,7 +678,7 @@ const About = () => {
 
 
             <div className="col-xl-8 col-lg-7">
-              <div className="blog-details-wrapper mb-40 wow fadeInUp">
+              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{background: 'white'}}>
                 <div className="blog-post-item">
                   <div className="post-content">
                    
@@ -678,17 +725,17 @@ const About = () => {
 
         
 
-
-
-
-
-
-
-
-
-          </div>
+            </div>
         </div>
       </section>
+
+
+
+
+
+
+
+        
 
 
 

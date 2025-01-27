@@ -22,7 +22,7 @@ const DefaultFooter = () => (
                 <Link href="/">
                   <a className="brand-logo" style={{width: '150px'}}>
                     <img
-                      src="assets/images/logo/oraclelogo.png"
+                      src="/assets/images/logo/oraclelogo.png"
                       alt="Footer Logo"
                     />
                   </a>
@@ -339,7 +339,7 @@ const FooterMenu = () => (
         <h4 className="widget-title">Recent News</h4>
         <ul className="post-widget-wrap">
           <li className="post-item">
-            <img src="assets/images/widget/news-1.jpg" alt="Post Image" />
+            <img src="/assets/images/widget/news-1.jpg" alt="Post Image" />
             <div className="post-title-date">
               <h3 className="title">
                 <Link href="/blog-details">
@@ -353,7 +353,7 @@ const FooterMenu = () => (
             </div>
           </li>
           <li className="post-item">
-            <img src="assets/images/widget/news-2.jpg" alt="Post Image" />
+            <img src="/assets/images/widget/news-2.jpg" alt="Post Image" />
             <div className="post-title-date">
               <h3 className="title">
                 <Link href="/blog-details">

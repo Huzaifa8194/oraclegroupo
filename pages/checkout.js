@@ -1,421 +1,184 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Accordion } from "react-bootstrap";
+import { useRouter } from "next/router";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../src/firebaseConfig";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
+import { loadStripe } from "@stripe/stripe-js";
+import { FaCreditCard, FaBitcoin, FaShippingFast, FaDollarSign } from "react-icons/fa";
+import { toast } from "react-toastify";
+
 const Checkout = () => {
+  const [user, setUser] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
+  // Fetch user and cart data
+  useEffect(() => {
+    const fetchCart = async (userId) => {
+      try {
+        const userDoc = await getDoc(doc(db, "Users", userId));
+        if (userDoc.exists()) {
+          const { cart } = userDoc.data();
+          setCartItems(cart || []);
+          const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+          setSubtotal(total);
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        fetchCart(currentUser.uid);
+      } else {
+        setUser(null);
+        setCartItems([]);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Handle Stripe Checkout
+  const handleCheckout = async () => {
+    if (!user) {
+      toast.info("Please log in to proceed with checkout.");
+      return;
+    }
+  
+    const stripe = await stripePromise;
+  
+    // Gather billing details from form inputs
+    const billingDetails = {
+      firstName: document.querySelector('input[placeholder="First Name"]').value,
+      lastName: document.querySelector('input[placeholder="Last Name"]').value,
+      email: document.querySelector('input[placeholder="Email Address"]').value,
+      phone: document.querySelector('input[placeholder="Phone Number"]').value,
+      address: document.querySelector('input[placeholder="Address"]').value,
+      city: document.querySelector('input[placeholder="City"]').value,
+      zip: document.querySelector('input[placeholder="ZIP Code"]').value,
+    };
+  
+    const response = await fetch("/api/stripe-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cartItems, email: user.email, billingDetails }),
+    });
+  
+    const session = await response.json();
+    if (session.id) {
+      await stripe.redirectToCheckout({ sessionId: session.id });
+    } else {
+      toast.info("Failed to initiate checkout. Please try again.");
+    }
+  };
+
+  if (loading) {
+    return <p>Loading checkout details...</p>;
+  }
+
   return (
-    <Layout>
+    <Layout header={4}>
       <PageBanner pageName={"Checkout"} />
-      <section className="checkout-section pt-170 pb-80">
+      <section className="checkout-section pt-100 pb-80">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="checkout-faqs" id="checkout-faqs">
-                <Accordion>
-                  <div className="alert">
-                    <h6>
-                      Returning customer?{" "}
-                      <Accordion.Toggle
-                        as={"a"}
-                        className="card-header c-pointer"
-                        data-toggle="collapse"
-                        data-target="#collapse0"
-                        aria-expanded="false"
-                        eventKey="collapse0"
-                      >
-                        Click here to login
-                      </Accordion.Toggle>
-                    </h6>
-                    <Accordion.Collapse
-                      eventKey="collapse0"
-                      className="content"
-                    >
-                      <form onSubmit={(e) => e.preventDefault()} action="#">
-                        <p>Please login your accont.</p>
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="email"
-                                id="email-address"
-                                name="email-address"
-                                className="form_control"
-                                defaultValue=""
-                                placeholder="Your Email Address"
-                                required=""
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-6">
-                            <div className="form-group">
-                              <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                className="form_control"
-                                defaultValue=""
-                                placeholder="Your Password"
-                                required=""
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="form-footer d-flex align-items-center">
-                          <button type="submit" className="main-btn btn-yellow">
-                            login <i className="fas fa-angle-double-right" />
-                          </button>
-                          <input
-                            type="checkbox"
-                            name="loss-passowrd"
-                            id="loss-passowrd"
-                            required=""
-                          />
-                          <label htmlFor="loss-passowrd">Remember me</label>
-                        </div>
-                        <a href="#">Lost your password?</a>
-                      </form>
-                    </Accordion.Collapse>
-                  </div>
-                </Accordion>
-                <Accordion>
-                  <div className="alert">
-                    <h6>
-                      Have a coupon?{" "}
-                      <Accordion.Toggle
-                        as={"a"}
-                        className="c-pointer card-header"
-                        data-toggle="collapse"
-                        eventKey="collapse3"
-                        aria-expanded="false"
-                      >
-                        Click here to enter your code
-                      </Accordion.Toggle>
-                    </h6>
-                    <Accordion.Collapse
-                      eventKey="collapse3"
-                      className="content"
-                    >
-                      <form onSubmit={(e) => e.preventDefault()} action="#">
-                        <p>If you have a coupon code, please apply it below.</p>
-                        <div className="form-group">
-                          <input
-                            type="text"
-                            id="coupon-code"
-                            name="coupon-code"
-                            className="form_control"
-                            defaultValue=""
-                            placeholder="Coupon Code"
-                            required=""
-                          />
-                        </div>
-                        <button type="submit" className="main-btn btn-yellow">
-                          apply coupon
-                        </button>
-                      </form>
-                    </Accordion.Collapse>
-                  </div>
-                </Accordion>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="checkout-wrapper mt-50 mb-80">
-                <h4 className="title mb-15">Billing Details</h4>
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="checkout-form"
-                >
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <h5>Personal Information</h5>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="First Name"
-                          name="name"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Last Name"
-                          name="name"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Phone Number"
-                          name="phone"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="email"
-                          className="form_control"
-                          placeholder="Email Address"
-                          name="phone"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Company Name (Optional)"
-                          name="phone"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Company Address (Optional)"
-                          name="phone"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-12">
-                      <h5>Your Address</h5>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group select-100">
-                        <select className="wide">
-                          <option value={0}>Select Country</option>
-                          <option value={1}>Australia</option>
-                          <option value={2}>Bangladesh</option>
-                          <option value={2}>Canada</option>
-                          <option value={3}>China</option>
-                          <option value={4}>Morocco</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="City"
-                          name="city"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="State"
-                          name="state"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Zip"
-                          name="zip"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="House, street name"
-                          name="street-name"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Apartment, suite, unit etc. (optional)"
-                          name="apartment-name"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-12">
-                      <h5>Order Notes (optional)</h5>
-                    </div>
-                    <div className="col-lg-12">
-                      <textarea
-                        name="order-note"
-                        className="form_control"
-                        placeholder="Notes about your order, e.g. special notes for delivery."
-                        defaultValue={""}
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div className="payment-cart-total">
-            <div className="row">
-              <div className="col-lg-6">
-                <div className="payment-method mb-50">
-                  <h4 className="title mb-20">Payment Method</h4>
-                  <Accordion
-                    defaultActiveKey="collapseOne"
-                    as="ul"
-                    id="paymentMethod"
-                    className="mb-30"
-                  >
-                    {/* Default unchecked */}
-                    <li className="custom-control custom-radio">
-                      <input
-                        type="radio"
-                        className="custom-control-input"
-                        id="methodone"
-                        name="defaultExampleRadios"
-                        defaultChecked
-                      />
-                      <Accordion.Toggle
-                        as="label"
-                        className="custom-control-label"
-                        htmlFor="methodone"
-                        data-toggle="collapse"
-                        data-target="#collapseOne"
-                        eventKey="collapseOne"
-                      >
-                        Direct Bank Transfer{" "}
-                        <i className="fas fa-money-check" />
-                      </Accordion.Toggle>
-                      <Accordion.Collapse
-                        eventKey="collapseOne"
-                        data-parent="#paymentMethod"
-                        style={{}}
-                      >
-                        <p>
-                          Make your payment directly into our bank account.
-                          Please use your Order ID as the payment reference.
-                          Your order will not be shipped our account.
-                        </p>
-                      </Accordion.Collapse>
-                    </li>
-                    {/* Default unchecked */}
-                    <li className="custom-control custom-radio">
-                      <input
-                        type="radio"
-                        className="custom-control-input"
-                        id="methodtwo"
-                        name="defaultExampleRadios"
-                      />
-                      <Accordion.Toggle
-                        as="label"
-                        className="custom-control-label collapsed"
-                        htmlFor="methodtwo"
-                        data-toggle="collapse"
-                        data-target="#collapseTwo"
-                        eventKey="collapseTwo"
-                      >
-                        Cash On Delivery <i className="fas fa-truck" />
-                      </Accordion.Toggle>
-                      <Accordion.Collapse
-                        eventKey="collapseTwo"
-                        data-parent="#paymentMethod"
-                        style={{}}
-                      >
-                        <p>Pay with cash upon delivery.</p>
-                      </Accordion.Collapse>
-                    </li>
-                    {/* Default unchecked */}
-                    <li className="custom-control custom-radio">
-                      <input
-                        type="radio"
-                        className="custom-control-input"
-                        id="methodthree"
-                        name="defaultExampleRadios"
-                      />
-                      <Accordion.Toggle
-                        as="label"
-                        className="custom-control-label collapsed"
-                        htmlFor="methodthree"
-                        data-toggle="collapse"
-                        data-target="#collapsethree"
-                        eventKey="collapsethree"
-                      >
-                        Paypal <i className="fab fa-cc-paypal" />
-                      </Accordion.Toggle>
-                      <Accordion.Collapse
-                        eventKey="collapsethree"
-                        data-parent="#paymentMethod"
-                        style={{}}
-                      >
-                        <p>
-                          Pay via PayPal; you can pay with your credit card if
-                          you don’t have a PayPal account.
-                        </p>
-                      </Accordion.Collapse>
-                    </li>
-                  </Accordion>
-                  <p>
-                    Your personal data will be used to process your order,
-                    support your experience throughout this website, and for
-                    other purposes described in our privacy policy.
-                  </p>
-                  <button className="main-btn btn-yellow">Place Order</button>
+          {/* Billing Details */}
+          <div className="billing-details">
+            <h4 className="section-title">Billing Details</h4>
+            <form className="billing-form">
+              <div className="row">
+                <div className="col-lg-6">
+                  <input type="text" placeholder="First Name" className="form_control" />
+                </div>
+                <div className="col-lg-6">
+                  <input type="text" placeholder="Last Name" className="form_control" />
+                </div>
+                <div className="col-lg-6">
+                  <input type="email" placeholder="Email Address" className="form_control" />
+                </div>
+                <div className="col-lg-6">
+                  <input type="text" placeholder="Phone Number" className="form_control" />
+                </div>
+                <div className="col-lg-12">
+                  <input type="text" placeholder="Address" className="form_control" />
+                </div>
+                <div className="col-lg-6">
+                  <input type="text" placeholder="City" className="form_control" />
+                </div>
+                <div className="col-lg-6">
+                  <input type="text" placeholder="ZIP Code" className="form_control" />
                 </div>
               </div>
-              <div className="col-lg-6">
-                <div className="shopping-cart-total mb-50">
-                  <h4 className="title">Cart Totals</h4>
-                  <table className="table">
-                    <tbody>
-                      <tr>
-                        <td>Cart Subtotal</td>
-                        <td>$200</td>
-                      </tr>
-                      <tr>
-                        <td>Shipping Fee</td>
-                        <td>$50</td>
-                      </tr>
-                      <tr>
-                        <td className="total">
-                          <span>Order Total</span>
-                        </td>
-                        <td className="total">
-                          <span>$250</span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <button className="main-btn btn-yellow">
-                    Proceed to checkout
-                  </button>
-                </div>
+            </form>
+          </div>
+
+          <div className="row mt-50">
+            {/* Order Summary */}
+            <div className="col-lg-6">
+              <h4 className="section-title">Order Summary</h4>
+              <div className="order-summary-wrapper">
+                <ul className="order-summary">
+                  {cartItems.map((item, index) => (
+                    <li key={index} className="order-item">
+                      <span>{item.name}</span>
+                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    </li>
+                  ))}
+                  <li className="order-item">
+                    <span>Subtotal</span>
+                    <span>${subtotal.toFixed(2)}</span>
+                  </li>
+                  <li className="order-item">
+                    <span>Shipping Fee</span>
+                    <span>$50</span>
+                  </li>
+                  <li className="order-item total">
+                    <span>Total</span>
+                    <span>${(subtotal + 50).toFixed(2)}</span>
+                  </li>
+                </ul>
               </div>
+            </div>
+
+            {/* Payment Section */}
+            <div className="col-lg-6">
+              <h4 className="section-title">Payment Method</h4>
+              <Accordion>
+                <div className="payment-method">
+                  <Accordion.Toggle as="label" eventKey="1">
+                    <FaCreditCard style={{ marginRight: "10px" }} />
+                    Credit/Debit Card
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="1">
+                    <p>Pay securely using your credit or debit card through Stripe.</p>
+                  </Accordion.Collapse>
+                </div>
+                <div className="payment-method">
+                  <Accordion.Toggle as="label" eventKey="2">
+                    <FaBitcoin style={{ marginRight: "10px", color: "#F7931A" }} />
+                    Cryptocurrency
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="2">
+                    <p>Pay securely using cryptocurrency through Stripe.</p>
+                  </Accordion.Collapse>
+                </div>
+              </Accordion>
+              <button onClick={handleCheckout} className="main-btn btn-yellow mt-20">
+                Proceed to Payment
+              </button>
             </div>
           </div>
         </div>
@@ -423,4 +186,5 @@ const Checkout = () => {
     </Layout>
   );
 };
+
 export default Checkout;

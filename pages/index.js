@@ -3,6 +3,12 @@ import { Nav, Tab } from "react-bootstrap";
 import Slider from "react-slick";
 import OrgariumCounter from "../src/components/OrgariumCounter";
 import ProgressBar from "../src/components/ProgressBar";
+import React, { useEffect, useState, useRef } from "react";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
+const db = getFirestore();
+
 import ProjectOneSlider from "../src/components/sliders/ProjectOneSlider";
 import Layout from "../src/layouts/Layout";
 import {
@@ -20,6 +26,170 @@ import {
   testimonialSliderOne,
 } from "../src/sliderProps";
 const Index = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!isAuthenticated) {
+      setError("You need to be logged in to send a message.");
+      return;
+    }
+
+    try {
+      // Save the message to Firestore
+      await addDoc(collection(db, "Messages"), {
+        name: formData.name,
+        email: auth.currentUser.email, // Use logged-in user's email
+        message: formData.message,
+        timestamp: new Date(),
+      });
+
+      setSuccess("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" }); // Reset form
+    } catch (err) {
+      console.error("Error sending message:", err);
+      setError("Failed to send your message. Please try again.");
+    }
+  };
+
+   const [marketCap, setMarketCap] = useState(null);
+    const [btcVolume, setBtcVolume] = useState(null);
+    const [miningDifficulty, setMiningDifficulty] = useState(null);
+    const [btcPrice, setBtcPrice] = useState(null);
+    const [btcDominance, setBtcDominance] = useState(null);
+    const [btcMarketCap, setBtcMarketCap] = useState(null);
+    const [remainingTime, setRemainingTime] = useState("");
+    const [btcPriceChart, setBtcPriceChart] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const timerRef = useRef(null); // Ref to manage the countdown timer
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        setLoading(true);
+  
+        try {
+          // Fetch global data from CoinGecko API
+          const coingeckoResponse = await fetch("https://api.coingecko.com/api/v3/global");
+          const coingeckoData = await coingeckoResponse.json();
+  
+          const totalMarketCap = coingeckoData.data.total_market_cap.usd || "N/A";
+          const totalBTCVolume = coingeckoData.data.total_volume.usd || "N/A";
+          const btcMarketCapValue = coingeckoData.data.market_cap_percentage.btc || "N/A";
+          const btcDominanceValue = coingeckoData.data.market_cap_percentage.btc || "N/A";
+  
+          setMarketCap(`$${totalMarketCap.toLocaleString()}`);
+          setBtcVolume(`$${totalBTCVolume.toLocaleString()}`);
+          setBtcMarketCap(`${btcMarketCapValue.toFixed(2)}%`);
+          setBtcDominance(`${btcDominanceValue.toFixed(2)}%`);
+  
+          // Fetch mining difficulty from Blockchain.com API
+          const blockchainResponse = await fetch("https://blockchain.info/q/getdifficulty");
+          const miningDifficultyData = await blockchainResponse.text();
+          setMiningDifficulty(parseFloat(miningDifficultyData).toFixed(2));
+  
+          // Fetch live Bitcoin price from CoinCap API
+          const btcPriceResponse = await fetch("https://api.coincap.io/v2/assets/bitcoin");
+          const btcPriceData = await btcPriceResponse.json();
+          setBtcPrice(`$${parseFloat(btcPriceData.data.priceUsd).toLocaleString()}`);
+  
+          // Fetch historical Bitcoin prices from CoinCap API
+          const priceChartResponse = await fetch(
+            "https://api.coincap.io/v2/assets/bitcoin/history?interval=d1"
+          );
+          const priceChartData = await priceChartResponse.json();
+  
+          if (priceChartData.data) {
+            const historicalPrices = priceChartData.data
+              .filter((entry) => new Date(entry.time).getFullYear() % 5 === 0) // Filter milestone years
+              .map((entry) => ({
+                year: new Date(entry.time).getFullYear(),
+                price: `$${parseFloat(entry.priceUsd).toFixed(2)}`,
+              }));
+            setBtcPriceChart(historicalPrices);
+          }
+  
+          // Fetch current block height for halving countdown
+          const blockHeightResponse = await fetch("https://blockchain.info/q/getblockcount");
+          const currentBlockHeight = await blockHeightResponse.text();
+  
+          const halvingInterval = 210000;
+          const nextHalvingBlock = Math.ceil(currentBlockHeight / halvingInterval) * halvingInterval;
+          const blocksToNextHalving = nextHalvingBlock - currentBlockHeight;
+          const averageBlockTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+          const nextHalvingDate = new Date(Date.now() + blocksToNextHalving * averageBlockTime);
+  
+          // Start the countdown timer
+          startCountdown(nextHalvingDate);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      const startCountdown = (halvingDate) => {
+        // Clear any existing timer
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+        }
+  
+        timerRef.current = setInterval(() => {
+          const now = new Date().getTime();
+          const timeLeft = halvingDate.getTime() - now;
+  
+          if (timeLeft > 0) {
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+  
+            setRemainingTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+          } else {
+            setRemainingTime("Halving is happening now!");
+            clearInterval(timerRef.current); // Stop the timer
+          }
+        }, 1000);
+      };
+  
+      fetchData();
+  
+      // Cleanup interval on unmount
+      return () => {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+        }
+      };
+    }, []);
+  
   return (
     <Layout header={4}>
       <section className="hero-area-one">
@@ -261,109 +431,142 @@ const Index = () => {
       {/*====== End Features Section ======*/}
       {/*====== Start About Section ======*/}
       <section className="about-section p-r z-1 pt-150 pb-100">
-        <div style={{ paddingLeft: "10%", paddingRight: "10%" }}>
-          <div className="row align-items-center">
-            <div className="col-xl-7 col-lg-8">
-              <div className="about-one_content-box mb-50">
-                <div className="section-title section-title-left mb-30 wow fadeInUp">
-                  <span className="sub-title">About Us</span>
-                  <h2>
-                    We’re a Trusted Name in Global Investments and Innovative
-                    Industries
-                  </h2>
-                </div>
-                <div
-                  className="quote-text mb-35 wow fadeInDown"
-                  data-wow-delay=".3s"
-                >
-                  <p>
-                    Oracle Group was established by a close-knit group of
-                    friends from the United States and Canada, united by family
-                    ties and a strong track record in business. Our team brings
-                    expertise in real estate development, the film industry, and
-                    advanced power systems, with technical leadership from Saul
-                    Stricker. We also provide global investment opportunities in
-                    the cryptocurrency sector, leveraging our diverse skill set
-                    and shared vision.
-                  </p>
-                </div>
-                <Tab.Container defaultActiveKey={"mission"}>
-                  <div className="tab-content-box rounded-[30px] wow fadeInUp">
-                    <Nav as={"ul"} className="nav nav-tabs mb-20">
-                      <li className="nav-item">
-                        <Nav.Link
-                          as={"a"}
-                          className="nav-link"
-                          data-toggle="tab"
-                          eventKey="mission"
-                          href="#mission"
-                        >
-                          Our Mission
-                        </Nav.Link>
-                      </li>
-                      <li className="nav-item">
-                        <Nav.Link
-                          as={"a"}
-                          className="nav-link"
-                          data-toggle="tab"
-                          eventKey="vision"
-                          href="#vision"
-                        >
-                          Our Vision
-                        </Nav.Link>
-                      </li>
-                    </Nav>
-                    <Tab.Content className="tab-content">
-                      <Tab.Pane className="tab-pane fade" eventKey="mission">
-                        <div className="content-box-gap">
-                          <p>
-                            To deliver exceptional value through innovative
-                            solutions in real estate, the film industry,
-                            advanced power systems, and cryptocurrency
-                            investments, empowering our clients to achieve
-                            sustainable growth and success.
-                          </p>
-                        </div>
-                      </Tab.Pane>
-                      <Tab.Pane className="tab-pane fade" eventKey="vision">
-                        <div className="content-box-gap">
-                          <p>
-                            To be a global leader in diverse investment
-                            opportunities, shaping the future of industries
-                            through innovation, collaboration, and a commitment
-                            to excellence.
-                          </p>
-                        </div>
-                      </Tab.Pane>
-                    </Tab.Content>
-                  </div>
-                </Tab.Container>
+  <div style={{ paddingLeft: "10%", paddingRight: "10%" }}>
+    <div className="row align-items-center">
+      {/* Left Side - Cryptocurrency Data */}
+      <div className="col-xl-7 col-lg-8">
+        <div className="about-one_content-box mb-50">
+          <div className="section-title section-title-left mb-30 wow fadeInUp">
+            <span className="sub-title">Live Crypto Data</span>
+            <h2>Stay Updated with Real-Time Cryptocurrency Insights</h2>
+          </div>
+
+          {/* Countdown Timer */}
+          <div className="crypto-data wow fadeInDown mb-35">
+            <h3 className="mb-3 text-center">Time to Next Bitcoin Halving</h3>
+            <div className="countdown-timer">
+              <p className="time text-center">{remainingTime}</p>
+            </div>
+          </div>
+
+          {/* Cryptocurrency Metrics */}
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="data-card text-center">
+                <strong>Total Market Cap</strong>
+                <p className="data-value">{loading ? "Loading..." : marketCap}</p>
               </div>
             </div>
-            <div className="col-xl-5 col-lg-4">
-              <div className="about-one_image-box p-r mb-50 pl-100">
-                {/* <div
-                  className="about-img_one wow fadeInLeft"
-                  style={{ borderRadius: "30px" }}
-                >
-                  <img
-                    style={{ borderRadius: "30px" }}
-                    src="assets/images/rates/img-1.jpg"
-                    alt="About Image"
-                  />
-                </div> */}
-                <div className="about-img_two wow fadeInRight">
-                  <img
-                    style={{ borderRadius: "30px" }}
-                    src="assets/images/about/aboutimg1.jpg"
-                    alt="About Image"
-                  />
-                </div>
+            <div className="col-md-6 mb-3">
+              <div className="data-card text-center">
+                <strong>BTC 24h Volume</strong>
+                <p className="data-value">{loading ? "Loading..." : btcVolume}</p>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="data-card text-center">
+                <strong>Mining Difficulty</strong>
+                <p className="data-value">
+                  {loading ? "Loading..." : miningDifficulty}
+                </p>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="data-card text-center">
+                <strong className="m-0 p-0" style={{margin: '0px', padding: '0px'}}>Live Bitcoin Price</strong>
+                <p className="data-value">{loading ? "Loading..." : btcPrice}</p>
               </div>
             </div>
           </div>
+
+          {/* Bitcoin Price Chart */}
+          <div className="mt-4">
+            <h4 className="text-center mb-3">Bitcoin Price Chart</h4>
+            <div className="table-container">
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {btcPriceChart.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{entry.year}</td>
+                      <td>{entry.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Right Side - Image */}
+      <div className="col-xl-5 col-lg-4">
+        <div className="about-one_image-box p-r mb-50 pl-100">
+          <div className="about-img_two wow fadeInRight">
+            <img
+              style={{ borderRadius: "30px" }}
+              src="assets/images/about/aboutimg_1.jpeg"
+              alt="About Image"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style jsx>{`
+    .countdown-timer .time {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ff5722;
+    }
+    .data-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .data-card:hover {
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    .data-card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .data-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2c2c2c;
+    }
+    .table-container {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .table-container table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    .table-container th,
+    .table-container td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    .table-container th {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+  `}</style>
+</section>
+
       {/*====== End About Section ======*/}
       {/*====== Start Service Section ======*/}
       <section className="service-one dark-black-bg pt-130 pb-125 p-r z-1">
@@ -637,7 +840,7 @@ const Index = () => {
                 className="offer-one_image-box bg_cover mb-50 wow fadeInRight"
                 style={{
                   borderRadius: "30px",
-                  backgroundImage: "url(assets/images/bg/yearsofexp.png)",
+                  backgroundImage: "url(assets/images/about/newimage2.jpeg)",
                 }}
               >
                 <div className="content-box">
@@ -850,116 +1053,124 @@ const Index = () => {
       {/*====== End Testimonial Section ======*/}
       {/*====== Start Contact Section ======*/}
       <section className="contact-one pt-150 p-r z-2">
-        <div className="container-fluid">
-          <div className="row no-gutters">
-            <div className="col-lg-6">
-              <div className="contact-one_content-box wow fadeInLeft">
-                <div className="contact-wrapper">
-                  <div className="section-title section-title-left mb-40">
-                    <span className="sub-title">Contact Us</span>
-                    <h3>
-                      Reach out to us now and let’s make your mining goals a
-                      reality!
-                    </h3>
-                  </div>
-                  <div className="contact-form">
-                    <form onSubmit={(e) => e.preventDefault()}>
-                      <div className="form_group">
-                        <input
-                          type="text"
-                          className="form_control"
-                          placeholder="Full Name"
-                          name="name"
-                          required=""
-                        />
-                      </div>
-                      <div className="form_group">
-                        <input
-                          type="email"
-                          className="form_control"
-                          placeholder="Email Address"
-                          name="email"
-                          required=""
-                        />
-                      </div>
-                      <div className="form_group">
-                        <textarea
-                          className="form_control"
-                          placeholder="Write Message"
-                          name="message"
-                          defaultValue={""}
-                        />
-                      </div>
-                      <div className="form_group">
-                        <button
-                          className="main-btn yellow-bg"
-                          style={{ color: "white" }}
-                        >
-                          Send Message
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+      <div className="container-fluid">
+        <div className="row no-gutters">
+          <div className="col-lg-6">
+            <div className="contact-one_content-box wow fadeInLeft">
+              <div className="contact-wrapper">
+                <div className="section-title section-title-left mb-40">
+                  <span className="sub-title">Contact Us</span>
+                  <h3>
+                    Reach out to us now and let’s make your mining goals a
+                    reality!
+                  </h3>
+                </div>
+                <div className="contact-form">
+                  <form onSubmit={handleSubmit}>
+                    <div className="form_group">
+                      <input
+                        type="text"
+                        className="form_control"
+                        placeholder="Full Name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form_group">
+                      <input
+                        type="email"
+                        className="form_control"
+                        placeholder="Email Address"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form_group">
+                      <textarea
+                        className="form_control"
+                        placeholder="Write Message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    {error && <p className="error-text">{error}</p>}
+                    {success && <p className="success-text">{success}</p>}
+                    <div className="form_group">
+                      <button
+                        className="main-btn yellow-bg"
+                        style={{ color: "white" }}
+                      >
+                        Send Message
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
-            <div className="col-lg-6">
+          </div>
+          <div className="col-lg-6">
+            <div
+              className="contact-one_information-box bg_cover wow fadeInRight"
+              style={{
+                borderRadius: "30px",
+                backgroundImage: "url(assets/images/bg/miner.png)",
+              }}
+            >
               <div
-                className="contact-one_information-box bg_cover wow fadeInRight"
-                style={{
-                  borderRadius: "30px",
-                  backgroundImage: "url(assets/images/bg/miner.png)",
-                }}
+                className="information-box"
+                style={{ backgroundColor: "white" }}
               >
-                <div
-                  className="information-box"
-                  style={{ backgroundColor: "white" }}
-                >
-                  <h3>Contact Us</h3>
-                  <p>
-                    Have any questions?
-                    <br />
-                    Need the assistance of any kind?
-                    <br />
-                    Start your successful mining today!
-                  </p>
-                  <div className="information-item_one d-flex mb-25">
-                    <div className="icon">
-                      <i className="flaticon-placeholder" />
-                    </div>
-                    <div className="info">
-                      <span className="sub-title mb-1">Location</span>
-                      <h5>55 Main Street, New York</h5>
-                    </div>
+                <h3>Contact Us</h3>
+                <p>
+                  Have any questions?
+                  <br />
+                  Need the assistance of any kind?
+                  <br />
+                  Start your successful mining today!
+                </p>
+                <div className="information-item_one d-flex mb-25">
+                  <div className="icon">
+                    <i className="flaticon-placeholder" />
                   </div>
-                  <div className="information-item_one d-flex mb-25">
-                    <div className="icon">
-                      <i className="flaticon-email" />
-                    </div>
-                    <div className="info">
-                      <span className="sub-title mb-1">Email Address</span>
-                      <h5>
-                        <a href="mailto:hotline@gmail.com">hotline@gmail.com</a>
-                      </h5>
-                    </div>
+                  <div className="info">
+                    <span className="sub-title mb-1">Location</span>
+                    <h5>55 Main Street, New York</h5>
                   </div>
-                  <div className="information-item_one d-flex mb-25">
-                    <div className="icon">
-                      <i className="flaticon-phone-call" />
-                    </div>
-                    <div className="info">
-                      <span className="sub-title mb-1">Phone Number</span>
-                      <h5>
-                        <a href="tel:+0123456789">+012(345) 67 89</a>
-                      </h5>
-                    </div>
+                </div>
+                <div className="information-item_one d-flex mb-25">
+                  <div className="icon">
+                    <i className="flaticon-email" />
+                  </div>
+                  <div className="info">
+                    <span className="sub-title mb-1">Email Address</span>
+                    <h5>
+                      <a href="mailto:hotline@gmail.com">hotline@gmail.com</a>
+                    </h5>
+                  </div>
+                </div>
+                <div className="information-item_one d-flex mb-25">
+                  <div className="icon">
+                    <i className="flaticon-phone-call" />
+                  </div>
+                  <div className="info">
+                    <span className="sub-title mb-1">Phone Number</span>
+                    <h5>
+                      <a href="tel:+0123456789">+012(345) 67 89</a>
+                    </h5>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
       {/*====== End Contact Section ======*/}
       {/*====== Start Blog Section ======*/}
       <section className="blog-section p-r z-1 pt-130 pb-100">

@@ -4,7 +4,7 @@ const PageBanner = ({ pageName, pageTitle }) => {
   return (
     <section
       className="page-banner bg_cover position-relative z-1"
-      style={{ backgroundImage: "url(assets/images/bg/miner.png)" }}
+      style={{ backgroundImage: "url(/assets/images/bg/miner.png)" }}
     >
       
       <div className="container">
