@@ -115,7 +115,7 @@ const AddMiningEquipment = () => {
             <div className="col-xl-8 col-lg-10">
               <form onSubmit={handleSubmit} className="equipment-form wow fadeInUp">
                 <div className="form-group">
-                  <label>Name:</label>
+                  <label style={{color: 'black'}}>Name:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -125,7 +125,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Description:</label>
+                  <label style={{color:'black'}}>Description:</label>
                   <textarea
                     className="form-control"
                     value={description}
@@ -134,7 +134,7 @@ const AddMiningEquipment = () => {
                   ></textarea>
                 </div>
                 <div className="form-group">
-                  <label>Price:</label>
+                  <label style = {{color: 'black'}}>Price:</label>
                   <input
                     type="number"
                     className="form-control"
@@ -144,7 +144,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Hashrate:</label>
+                  <label style={{color:'black'}}>Hashrate:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -153,7 +153,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Algorithm:</label>
+                  <label style ={{color: 'black'}}>Algorithm:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -162,7 +162,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Power:</label>
+                  <label style ={{color: 'black'}}>Power:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -171,7 +171,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Minimum Order Qty:</label>
+                  <label style ={{color: 'black'}}>Minimum Order Qty:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -179,8 +179,13 @@ const AddMiningEquipment = () => {
                     onChange={(e) => setMinimumOrderQty(e.target.value)}
                   />
                 </div>
+
+
+                <div className ="">
+                <p style ={{color: 'black'}}>Availability:</p>
+                </div>
              <div className="mb-20">
-                <label>Availability:</label>
+               
                   <select
                     className="form-control"
                     value={availability}
@@ -193,7 +198,7 @@ const AddMiningEquipment = () => {
                   </div>
               
                 <div className="form-group">
-                  <label>Upload Images (Can upload multiple):</label>
+                  <label style ={{color: 'black'}}>Upload Images (Can upload multiple):</label>
                   <div
                     {...getRootProps({
                       className: "dropzone",
