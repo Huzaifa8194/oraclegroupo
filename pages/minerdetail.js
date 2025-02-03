@@ -4,12 +4,36 @@ import { db } from "../src/firebaseConfig"; // Adjust path if necessary
 import Layout from "../src/layouts/Layout";
 import PageBanner from "../src/components/PageBanner";
 import { toast } from "react-toastify";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
+
+import { getDoc } from "firebase/firestore";
 
 const ViewMiners = () => {
   const [miners, setMiners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingMiner, setEditingMiner] = useState(null); // Miner being edited
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+
+
+   const router = useRouter();
+  
+    useEffect(() => {
+      const auth = getAuth();
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          router.push("/");
+          return;
+        }
+        
+        const userDocRef = doc(db, "Users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+  
+        if (!userDoc.exists() || userDoc.data().role !== "admin") {
+          router.push("/");
+        }
+      });
+    }, [router]);
 
   useEffect(() => {
     const fetchMiners = async () => {
@@ -167,7 +191,7 @@ const ViewMiners = () => {
             <h2>Edit Miner Details</h2>
             <form>
               <div className="form-group">
-                <label>Name:</label>
+                <label style={{color:'black'}}>Name:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -177,7 +201,7 @@ const ViewMiners = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Description:</label>
+                <label style={{color:'black'}}>Description:</label>
                 <textarea
                   className="form-control"
                   name="description"
@@ -186,7 +210,7 @@ const ViewMiners = () => {
                 ></textarea>
               </div>
               <div className="form-group">
-                <label>Price:</label>
+                <label style={{color:'black'}}>Price:</label>
                 <input
                   type="number"
                   className="form-control"
@@ -196,7 +220,7 @@ const ViewMiners = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Hashrate:</label>
+                <label style={{color:'black'}}>Hashrate:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -206,7 +230,7 @@ const ViewMiners = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Algorithm:</label>
+                <label style={{color:'black'}}>Algorithm:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -216,7 +240,7 @@ const ViewMiners = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Power:</label>
+                <label style={{color:'black'}}>Power:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -226,7 +250,7 @@ const ViewMiners = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Minimum Order Qty:</label>
+                <label style={{color:'black'}}>Minimum Order Qty:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -236,7 +260,7 @@ const ViewMiners = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Availability:</label>
+                <label style={{color:'black'}}>Availability:</label>
                 <select
                   className="form-control"
                   name="availability"

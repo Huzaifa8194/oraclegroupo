@@ -429,7 +429,7 @@ button {
   display: -ms-inline-flexbox;
   display: inline-flex;
   content: "";
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   font-weight: 400;
   margin-left: 10px;
 }
@@ -491,7 +491,7 @@ button {
   position: absolute;
   right: 0;
   content: "";
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   font-weight: 400;
 }
 .nice-select ul.list {
@@ -1016,7 +1016,7 @@ button {
 }
 .header-navigation .main-menu ul > li.has-children > a:after {
   content: "";
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   font-weight: 400;
   display: inline-block;
   font-size: 14px;
@@ -1735,7 +1735,7 @@ button {
   color: #2c2c2c;
 }
 .navigation-four .nav-right-item .navbar-toggler {
-  border-color: #fff;
+  border-color: transparent;
 }
 .navigation-four .nav-right-item .navbar-toggler span {
   background-color: #fff;
@@ -2735,7 +2735,7 @@ button {
   margin-left: 23px;
   margin-right: 19px;
   font-weight: 400;
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   content: "";
 }
 .page-banner .page-title .breadcrumbs-link li a {
@@ -2960,7 +2960,7 @@ button {
 .tab-content-box .nav-tabs .nav-link:after {
   display: inline-block;
   content: "";
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   font-weight: 400;
   margin-left: 10px;
 }
@@ -3357,7 +3357,7 @@ button {
   content: "";
   font-weight: 700;
   color: #2c2c2c;
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   -webkit-box-flex: 0;
   -ms-flex: 0 0 30px;
   flex: 0 0 30px;
@@ -4890,7 +4890,7 @@ button {
 }
 .faq-one_content-box .card .card-header a[aria-expanded]:after {
   content: "";
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   font-weight: 400;
   font-size: 22px;
   margin-left: auto;
@@ -8245,7 +8245,7 @@ label {
   display: inline-flex;
   content: "";
   font-weight: 400;
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   margin-right: 15px;
 }
 .footer-widget-nav ul li a:hover {
@@ -8259,7 +8259,7 @@ label {
 .recent-post-widget .more-btn:after {
   display: inline-block;
   content: "";
-  font-family: "Anek Latin";
+  font-family: "Font Awesome 5 Pro";
   font-weight: 400;
   margin-left: 8px;
 }

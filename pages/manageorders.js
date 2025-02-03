@@ -6,6 +6,11 @@ import { db } from "../src/firebaseConfig";
 import Layout from "../src/layouts/Layout";
 import PageBanner from "../src/components/PageBanner";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
+
+import { getDoc } from "firebase/firestore";
+
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -14,6 +19,26 @@ const ManageOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("newest");
 
+
+
+    const router = useRouter();
+    
+      useEffect(() => {
+        const auth = getAuth();
+        onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            router.push("/");
+            return;
+          }
+          
+          const userDocRef = doc(db, "Users", user.uid);
+          const userDoc = await getDoc(userDocRef);
+    
+          if (!userDoc.exists() || userDoc.data().role !== "admin") {
+            router.push("/");
+          }
+        });
+      }, [router]);
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const orderRef = doc(db, "Orders", orderId);
@@ -216,7 +241,9 @@ const ManageOrders = () => {
                         <option value="Pending">Pending</option>
                       </select>
                     </div>
-                    <p><br/></p>
+                    <div style={{ borderTop: "1px solid transparent", margin: "20px 0" }}></div>
+                <div style={{ borderTop: "1px solid transparent", margin: "20px 0" }}></div>
+                <div style={{ borderTop: "1px solid #ccc", margin: "20px 0" }}></div>
                      
                     {/* Comment Text Area */}
                     <div className="form_group mt-3">

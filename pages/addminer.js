@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { useDropzone } from "react-dropzone";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -10,6 +10,9 @@ import { v4 as uuidv4 } from "uuid";
 import Layout from "../src/layouts/Layout";
 import PageBanner from "../src/components/PageBanner";
 import { toast } from "react-toastify";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+
 
 const AddMiningEquipment = () => {
   const [name, setName] = useState("");
@@ -24,6 +27,24 @@ const AddMiningEquipment = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        router.push("/");
+        return;
+      }
+      
+      const userDocRef = doc(db, "Users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists() || userDoc.data().role !== "admin") {
+        router.push("/");
+      }
+    });
+  }, [router]);
+
 
   const onDrop = (acceptedFiles) => {
     const newFiles = acceptedFiles.map((file) =>
@@ -113,9 +134,12 @@ const AddMiningEquipment = () => {
           </div>
           <div className="row justify-content-center">
             <div className="col-xl-8 col-lg-10">
-              <form onSubmit={handleSubmit} className="equipment-form wow fadeInUp">
+              <form
+                onSubmit={handleSubmit}
+                className="equipment-form wow fadeInUp"
+              >
                 <div className="form-group">
-                  <label style={{color: 'black'}}>Name:</label>
+                  <label style={{ color: "black" }}>Name:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -125,7 +149,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label style={{color:'black'}}>Description:</label>
+                  <label style={{ color: "black" }}>Description:</label>
                   <textarea
                     className="form-control"
                     value={description}
@@ -134,7 +158,7 @@ const AddMiningEquipment = () => {
                   ></textarea>
                 </div>
                 <div className="form-group">
-                  <label style = {{color: 'black'}}>Price:</label>
+                  <label style={{ color: "black" }}>Price:</label>
                   <input
                     type="number"
                     className="form-control"
@@ -144,7 +168,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label style={{color:'black'}}>Hashrate:</label>
+                  <label style={{ color: "black" }}>Hashrate:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -153,7 +177,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label style ={{color: 'black'}}>Algorithm:</label>
+                  <label style={{ color: "black" }}>Algorithm:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -162,7 +186,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label style ={{color: 'black'}}>Power:</label>
+                  <label style={{ color: "black" }}>Power:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -171,7 +195,7 @@ const AddMiningEquipment = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label style ={{color: 'black'}}>Minimum Order Qty:</label>
+                  <label style={{ color: "black" }}>Minimum Order Qty:</label>
                   <input
                     type="text"
                     className="form-control"
@@ -180,12 +204,10 @@ const AddMiningEquipment = () => {
                   />
                 </div>
 
-
-                <div className ="">
-                <p style ={{color: 'black'}}>Availability:</p>
+                <div className="">
+                  <p style={{ color: "black" }}>Availability:</p>
                 </div>
-             <div className="mb-20">
-               
+                <div className="mb-20">
                   <select
                     className="form-control"
                     value={availability}
@@ -195,10 +217,16 @@ const AddMiningEquipment = () => {
                     <option value="In Stock">In Stock</option>
                     <option value="Out of Stock">Out of Stock</option>
                   </select>
-                  </div>
-              
+                </div>
+
+                <div style={{ borderTop: "1px solid transparent", margin: "20px 0" }}></div>
+                <div style={{ borderTop: "1px solid transparent", margin: "20px 0" }}></div>
+                <div style={{ borderTop: "1px solid #ccc", margin: "20px 0" }}></div>
+
                 <div className="form-group">
-                  <label style ={{color: 'black'}}>Upload Images (Can upload multiple):</label>
+                  <label style={{ color: "black" }}>
+                    Upload Images (Can upload multiple):
+                  </label>
                   <div
                     {...getRootProps({
                       className: "dropzone",
@@ -214,7 +242,10 @@ const AddMiningEquipment = () => {
                     <input {...getInputProps()} />
                     <p>Drag and drop images here, or click to select files</p>
                   </div>
-                  <div className="preview-container" style={{ marginTop: "10px" }}>
+                  <div
+                    className="preview-container"
+                    style={{ marginTop: "10px" }}
+                  >
                     {images.map((image, index) => (
                       <div
                         key={index}

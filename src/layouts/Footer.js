@@ -254,8 +254,8 @@ const FooterMenu = () => (
         <h4 className="widget-title">About Us</h4>
         <div className="footer-about-content">
           <p>
-          At ORACLE Development Group, we specialize in delivering top-notch crypto mining solutions, from premium mining equipment to reliable hosting services. With a commitment to innovation and customer satisfaction, we empower individuals and businesses to achieve unparalleled mining efficiency and profitability.
-          </p>
+          Oracle Group, founded by a U.S.-Canadian team with strong business ties, specializes in real estate, film, advanced power systems, and global cryptocurrency investments, led by Saul Stricker. 
+           </p>
           <div className="social-box">
             <h4 className="mb-15">Follow On</h4>
             <ul className="social-link">
@@ -290,46 +290,33 @@ const FooterMenu = () => (
         <div className="footer-widget-nav">
           <ul>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/">Home</a>
             </li>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/about">Who We Are</a>
             </li>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/rates">Start Mining</a>
             </li>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/products">Our Products</a>
             </li>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/cart">Cart</a>
             </li>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/checkout">Checkout</a>
             </li>
-            <li>
-              <a href="#">PlaceHolder</a>
-            </li>
+          
           </ul>
           <ul>
-            <li>
-              <a href="#">PlaceHolder</a>
+          <li>
+              <a href="/calculator">Calculator</a>
             </li>
             <li>
-              <a href="#">PlaceHolder</a>
+              <a href="/contact">Contact Us</a>
             </li>
-            <li>
-              <a href="#">PlaceHolder</a>
-            </li>
-            <li>
-              <a href="#">PlaceHolder</a>
-            </li>
-            <li>
-              <a href="#">PlaceHolder</a>
-            </li>
-            <li>
-              <a href="#">PlaceHolder</a>
-            </li>
+          
           </ul>
         </div>
       </div>
@@ -339,7 +326,7 @@ const FooterMenu = () => (
         <h4 className="widget-title">Recent News</h4>
         <ul className="post-widget-wrap">
           <li className="post-item">
-            <img src="/assets/images/widget/news-1.jpg" alt="Post Image" />
+            <img src="/assets/images/blog/news1r.jpg" alt="Post Image" />
             <div className="post-title-date">
               <h3 className="title">
                 <Link href="/blog-details">
@@ -353,7 +340,7 @@ const FooterMenu = () => (
             </div>
           </li>
           <li className="post-item">
-            <img src="/assets/images/widget/news-2.jpg" alt="Post Image" />
+            <img src="/assets/images/blog/news2r.jpg" alt="Post Image" />
             <div className="post-title-date">
               <h3 className="title">
                 <Link href="/blog-details">

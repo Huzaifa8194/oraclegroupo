@@ -7,9 +7,33 @@ import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
 import { FaEnvelope, FaUser, FaClock } from "react-icons/fa";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
+
+import { getDoc } from "firebase/firestore";
+import {doc } from "firebase/firestore";
+
 const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+   const router = useRouter();
+      
+        useEffect(() => {
+          const auth = getAuth();
+          onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+              router.push("/");
+              return;
+            }
+            
+            const userDocRef = doc(db, "Users", user.uid);
+            const userDoc = await getDoc(userDocRef);
+      
+            if (!userDoc.exists() || userDoc.data().role !== "admin") {
+              router.push("/");
+            }
+          });
+        }, [router]);
 
   // Fetch messages from Firestore
   useEffect(() => {

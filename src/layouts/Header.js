@@ -472,42 +472,42 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
             <div className="row text-center">
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mb-2">{marketCap || "Loading..."}</strong>
+                  <strong className="mt-2">{marketCap || "Loading..."}</strong>
                   
                   Total Market Cap
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mb-2">{btcVolume || "Loading..."}</strong>
+                  <strong className="mt-2">{btcVolume || "Loading..."}</strong>
                  
                   BTC 24h Vol
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mb-2">{miningDifficulty || "Loading..."}</strong>
+                  <strong className="mt-2">{miningDifficulty || "Loading..."}</strong>
                  
                   Mining Difficulty
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mb-2">{btcPrice || "Loading..."}</strong>
+                  <strong className="mt-2">{btcPrice || "Loading..."}</strong>
                   
                   Live Bitcoin Price
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mb-2">{btcDominance || "Loading..."}</strong>
+                  <strong className="mt-2">{btcDominance || "Loading..."}</strong>
                  
                   BTC Dominance
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mb-2">{btcMarketCap || "Loading..."}</strong>
+                  <strong className="mt-2">{btcMarketCap || "Loading..."}</strong>
                 
                   BTC Market Cap
                 </span>
@@ -604,7 +604,11 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
 
               {/* Nav Right Item */}
               <div className="nav-right-item d-flex align-items-center">
-                <div className="navbar-toggler"></div>
+                <div className="navbar-toggler">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
             </div>
           </div>
@@ -929,14 +933,14 @@ const Menu = () => {
           <a href="#">Shop</a>
           <ul className="sub-menu">
             <li>
-              <Link href="products">Our Products</Link>
+              <Link href="/products">Our Products</Link>
             </li>
            
             <li>
-              <Link href="cart">Cart</Link>
+              <Link href="/cart">Cart</Link>
             </li>
             <li>
-              <Link href="checkout">Checkout</Link>
+              <Link href="/checkout">Checkout</Link>
             </li>
           </ul>
         </li>
@@ -957,13 +961,13 @@ const Menu = () => {
           <a href="#">{user.email}</a>
           <ul className="sub-menu">
             <li>
-              <Link href="cart">Cart</Link>
+              <Link href="/cart">Cart</Link>
             </li>
             <li>
-              <Link href="orders">My Orders</Link>
+              <Link href="/orders">My Orders</Link>
             </li>
             <li>
-              <a href = "" onClick={handleLogout}>Log Out</a>
+              <a href = "/" onClick={handleLogout}>Log Out</a>
             </li>
           </ul>
         </li>
@@ -1058,13 +1062,13 @@ const Menu2 = () => {
           <a href="#">{user.email}</a>
           <ul className="sub-menu">
             <li>
-              <Link href="cart">Cart</Link>
+              <Link href="/cart">Cart</Link>
             </li>
             <li>
-              <Link href="orders">My Orders</Link>
+              <Link href="/orders">My Orders</Link>
             </li>
             <li>
-              <a href = "" onClick={handleLogout}>Log Out</a>
+              <a href = "/" onClick={handleLogout}>Log Out</a>
             </li>
           </ul>
         </li>

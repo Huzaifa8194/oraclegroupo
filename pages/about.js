@@ -216,8 +216,9 @@ const About = () => {
     },
   ].map((member, index) => (
     <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12" key={index}>
-      <div className="team-member_one text-center mb-40 wow fadeInUp">
+      <div className="team-member_one text-center mb-40 wow fadeInUp" href = {member.id}>
         <div className="member-img" style={{ overflow: "hidden" }}>
+        <Link  href={`#${member.id}`}>
           <img
             src={member.imgSrc}
             alt=""
@@ -228,7 +229,9 @@ const About = () => {
               borderRadius: "20px",
             }}
           />
+          </Link>
         </div>
+        <Link  href={`#${member.id}`}>
         <div
           className="member-info"
           style={{
@@ -268,6 +271,7 @@ const About = () => {
             </li>
           </ul>
         </div>
+        </Link>
       </div>
     </div>
   ))}
@@ -292,8 +296,8 @@ const About = () => {
                     style={{
                   height: "250px",
                   width: "250px",
-                  objectFit: "cover",
-                  borderRadius: "50%",
+                  objectFit: "contain",
+                  borderRadius: "10%",
                 }} />
                     <h4>Lorne Harari</h4>
                     <p>Founding partner</p>
@@ -406,8 +410,8 @@ const About = () => {
                      style={{
                       height: "250px",
                       width: "250px",
-                      objectFit: "cover",
-                      borderRadius: "50%",
+                      objectFit: "contain",
+                      borderRadius: "10%",
                     }}
                     />
                     <h4>Paul Orsenigo</h4>
@@ -507,9 +511,9 @@ const About = () => {
                     
                     style={{
                       height: "250px",
-                      width: "250px",
+                      width: "200px",
                       objectFit: "cover",
-                      borderRadius: "50%",
+                      borderRadius: "2%",
                     }}/>
                     <h4>Saul Stricker</h4>
                     <p> Global Energy Efficiency Strategist</p>
@@ -642,8 +646,8 @@ const About = () => {
                      style={{
                       height: "250px",
                       width: "250px",
-                      objectFit: "cover",
-                      borderRadius: "50%",
+                      objectFit: "contain",
+                      borderRadius: "10%",
                     }}/>
                     <h4>Christopher Bregman</h4>
                     <p>Partner</p>

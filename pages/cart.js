@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { db, auth } from "../src/firebaseConfig";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
-import { FaTrash, FaCartPlus, FaTruck } from "react-icons/fa";
+import { FaTrash, FaCartPlus } from "react-icons/fa";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -17,10 +17,16 @@ const Cart = () => {
   useEffect(() => {
     const fetchCart = async (userId) => {
       try {
-        const userDoc = await getDoc(doc(db, "Users", userId));
+        const userRef = doc(db, "Users", userId);
+        const userDoc = await getDoc(userRef);
+        
         if (userDoc.exists()) {
           const { cart } = userDoc.data();
           setCartItems(cart || []);
+        } else {
+          // If the document doesn't exist, create an empty cart for the user
+          await setDoc(userRef, { cart: [] }, { merge: true });
+          setCartItems([]);
         }
       } catch (error) {
         console.error("Error fetching cart:", error);
@@ -49,12 +55,11 @@ const Cart = () => {
 
     const updatedCartItems = [...cartItems];
     updatedCartItems[index].quantity = newQuantity;
-
     setCartItems(updatedCartItems);
 
     try {
       const userRef = doc(db, "Users", user.uid);
-      await updateDoc(userRef, { cart: updatedCartItems });
+      await setDoc(userRef, { cart: updatedCartItems }, { merge: true });
     } catch (error) {
       console.error("Error updating cart:", error);
     }
@@ -63,12 +68,11 @@ const Cart = () => {
   // Remove item from cart
   const removeItem = async (index) => {
     const updatedCartItems = cartItems.filter((_, i) => i !== index);
-
     setCartItems(updatedCartItems);
 
     try {
       const userRef = doc(db, "Users", user.uid);
-      await updateDoc(userRef, { cart: updatedCartItems });
+      await setDoc(userRef, { cart: updatedCartItems }, { merge: true });
     } catch (error) {
       console.error("Error removing item:", error);
     }
@@ -84,7 +88,7 @@ const Cart = () => {
   }
 
   return (
-    <Layout header = {4}>
+    <Layout header={4}>
       <PageBanner pageName={"Cart"} />
       <section className="cart-section pt-100 pb-100 mt-70 mb-70">
         <div className="container">
@@ -133,10 +137,7 @@ const Cart = () => {
                         </td>
                         <td>${(item.price * item.quantity).toFixed(2)}</td>
                         <td>
-                          <button
-                            className="remove-btn"
-                            onClick={() => removeItem(index)}
-                          >
+                          <button className="remove-btn" onClick={() => removeItem(index)}>
                             <FaTrash />
                           </button>
                         </td>
