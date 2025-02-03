@@ -63,28 +63,42 @@ const Checkout = () => {
   
     // Gather billing details from form inputs
     const billingDetails = {
-      firstName: document.querySelector('input[placeholder="First Name"]').value,
-      lastName: document.querySelector('input[placeholder="Last Name"]').value,
-      email: document.querySelector('input[placeholder="Email Address"]').value,
-      phone: document.querySelector('input[placeholder="Phone Number"]').value,
-      address: document.querySelector('input[placeholder="Address"]').value,
-      city: document.querySelector('input[placeholder="City"]').value,
-      zip: document.querySelector('input[placeholder="ZIP Code"]').value,
+      firstName: document.querySelector('input[placeholder="First Name"]').value.trim(),
+      lastName: document.querySelector('input[placeholder="Last Name"]').value.trim(),
+      email: document.querySelector('input[placeholder="Email Address"]').value.trim(),
+      phone: document.querySelector('input[placeholder="Phone Number"]').value.trim(),
+      address: document.querySelector('input[placeholder="Address"]').value.trim(),
+      city: document.querySelector('input[placeholder="City"]').value.trim(),
+      zip: document.querySelector('input[placeholder="ZIP Code"]').value.trim(),
     };
   
-    const response = await fetch("/api/stripe-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cartItems, email: user.email, billingDetails }),
-    });
+    // Check if any field is empty
+    const missingFields = Object.entries(billingDetails).filter(([key, value]) => !value);
   
-    const session = await response.json();
-    if (session.id) {
-      await stripe.redirectToCheckout({ sessionId: session.id });
-    } else {
-      toast.info("Failed to initiate checkout. Please try again.");
+    if (missingFields.length > 0) {
+      toast.info("Please fill all billing details.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("/api/stripe-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartItems, email: user.email, billingDetails }),
+      });
+  
+      const session = await response.json();
+      if (session.id) {
+        await stripe.redirectToCheckout({ sessionId: session.id });
+      } else {
+        toast.info("Failed to initiate checkout. Please try again.");
+      }
+    } catch (error) {
+      console.error("Checkout Error:", error);
+      toast.error("An error occurred during checkout. Please try again.");
     }
   };
+  
 
   if (loading) {
     return <p>Loading checkout details...</p>;
@@ -159,17 +173,17 @@ const Checkout = () => {
               <Accordion>
                 <div className="payment-method">
                   <Accordion.Toggle as="label" eventKey="1">
-                    <FaCreditCard style={{ marginRight: "10px" }} />
-                    Credit/Debit Card
+                    <FaCreditCard style={{ marginRight: "10px", color: '#eece38' }} />
+                    <p style = {{display: 'inline'}}>Credit/Debit Card</p>
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
-                    <p>Pay securely using your credit or debit card through Stripe.</p>
+                  <p >Pay securely using your credit or debit card through Stripe.</p>
                   </Accordion.Collapse>
                 </div>
                 <div className="payment-method">
                   <Accordion.Toggle as="label" eventKey="2">
                     <FaBitcoin style={{ marginRight: "10px", color: "#F7931A" }} />
-                    Cryptocurrency
+                    <p style = {{display: 'inline'}}>Cryptocurrency</p>
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="2">
                     <p>Pay securely using cryptocurrency through Stripe.</p>
