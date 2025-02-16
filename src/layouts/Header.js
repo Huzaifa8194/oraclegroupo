@@ -524,12 +524,12 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
             <div className="row align-items-center">
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
                 <div className="top-bar-left d-flex align-items-center">
-                  {/* <span className="lang-dropdown">
+                  <span className="lang-dropdown">
                     <select className="wide">
                       <option value={1}>English</option>
-                      <option value={2}>French</option>
+                     
                     </select>
-                  </span> */}
+                  </span>
                 </div>
               </div>
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
@@ -646,12 +646,12 @@ const Header5 = ({ overlayPanel, togglePanel }) => {
             <div className="row align-items-center">
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
                 <div className="top-bar-left d-flex align-items-center">
-                  {/* <span className="lang-dropdown">
+                  <span className="lang-dropdown">
                     <select className="wide">
                       <option value={1}>English</option>
-                      <option value={2}>French</option>
+                      
                     </select>
-                  </span> */}
+                  </span>
                 </div>
               </div>
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
