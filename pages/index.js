@@ -9,7 +9,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const auth = getAuth();
 const db = getFirestore();
 
-
 import Head from "next/head";
 
 import ProjectOneSlider from "../src/components/sliders/ProjectOneSlider";
@@ -84,247 +83,301 @@ const Index = () => {
     }
   };
 
-   const [marketCap, setMarketCap] = useState(null);
-    const [btcVolume, setBtcVolume] = useState(null);
-    const [miningDifficulty, setMiningDifficulty] = useState(null);
-    const [btcPrice, setBtcPrice] = useState(null);
-    const [btcDominance, setBtcDominance] = useState(null);
-    const [btcMarketCap, setBtcMarketCap] = useState(null);
-    const [remainingTime, setRemainingTime] = useState("");
-    const [btcPriceChart, setBtcPriceChart] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const timerRef = useRef(null); // Ref to manage the countdown timer
-  
-    useEffect(() => {
-    
-      setLoading(true);
-    
-      const fetchWithRetry = async (url, retries = 3, delay = 2000) => {
-        for (let i = 0; i < retries; i++) {
-          try {
-            const response = await fetch(url);
-            if (response.ok) {
-              return response.json();
-            }
-    
-            const text = await response.text();
-            if (text.includes("Throttled") || response.status === 429) {
-              console.warn(`Rate limit hit. Retrying in ${delay / 1000} seconds...`);
-              await new Promise((res) => setTimeout(res, delay));
-            } else {
-              throw new Error(`API request failed: ${text}`);
-            }
-          } catch (error) {
-            console.error("Fetch error:", error);
-          }
-        }
-        throw new Error("Max retries exceeded");
-      };
-    
-      const cacheData = (key, data, ttl = 60000) => {
-        localStorage.setItem(key, JSON.stringify({ data, expiry: Date.now() + ttl }));
-      };
-    
-      const getCachedData = (key) => {
-        const cached = localStorage.getItem(key);
-        if (!cached) return null;
-    
-        const parsed = JSON.parse(cached);
-        if (Date.now() > parsed.expiry) {
-          localStorage.removeItem(key);
-          return null;
-        }
-        return parsed.data;
-      };
-    
-      const fetchData = async () => {
+  const [marketCap, setMarketCap] = useState(null);
+  const [btcVolume, setBtcVolume] = useState(null);
+  const [miningDifficulty, setMiningDifficulty] = useState(null);
+  const [btcPrice, setBtcPrice] = useState(null);
+  const [btcDominance, setBtcDominance] = useState(null);
+  const [btcMarketCap, setBtcMarketCap] = useState(null);
+  const [remainingTime, setRemainingTime] = useState("");
+  const [btcPriceChart, setBtcPriceChart] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const timerRef = useRef(null); // Ref to manage the countdown timer
+
+  useEffect(() => {
+    setLoading(true);
+
+    const fetchWithRetry = async (url, retries = 3, delay = 2000) => {
+      for (let i = 0; i < retries; i++) {
         try {
-          let coingeckoData = getCachedData("coingecko_global");
-          if (!coingeckoData) {
-            coingeckoData = await fetchWithRetry("https://api.coingecko.com/api/v3/global");
-            cacheData("coingecko_global", coingeckoData);
+          const response = await fetch(url);
+          if (response.ok) {
+            return response.json();
           }
-    
-          setMarketCap(`$${coingeckoData.data.total_market_cap.usd.toLocaleString()}`);
-          setBtcVolume(`$${coingeckoData.data.total_volume.usd.toLocaleString()}`);
-          setBtcMarketCap(`${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`);
-          setBtcDominance(`${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`);
-    
-          let miningDifficulty = getCachedData("mining_difficulty");
-          if (!miningDifficulty) {
-            const blockchainResponse = await fetch("https://blockchain.info/q/getdifficulty");
-            miningDifficulty = parseFloat(await blockchainResponse.text()).toFixed(2);
-            cacheData("mining_difficulty", miningDifficulty);
-          }
-          setMiningDifficulty(miningDifficulty);
-    
-          const fetchHistoricalPrice = async (daysAgo) => {
-            const pastTimestamp = new Date();
-            pastTimestamp.setDate(pastTimestamp.getDate() - daysAgo);
-            const unixTime = Math.floor(pastTimestamp.getTime() / 1000);
-    
-            const response = await fetch(
-              `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${unixTime}&to=${unixTime + 86400}`
+
+          const text = await response.text();
+          if (text.includes("Throttled") || response.status === 429) {
+            console.warn(
+              `Rate limit hit. Retrying in ${delay / 1000} seconds...`
             );
-            const data = await response.json();
-    
-            if (data.prices && data.prices.length > 0) {
-              return parseFloat(data.prices[0][1]);
-            } else {
-              return null;
-            }
-          };
-    
-          const timeFrames = [
-            { label: "24 hours ago", daysAgo: 1 },
-            { label: "1 week ago", daysAgo: 7 },
-            { label: "1 month ago", daysAgo: 30 },
-            { label: "1 year ago", daysAgo: 365 },
-          ];
-    
-          const historicalPrices = await Promise.all(
-            timeFrames.map(async (timeFrame) => {
-              const pastPrice = await fetchHistoricalPrice(timeFrame.daysAgo);
-              return pastPrice
-                ? {
-                    label: timeFrame.label,
-                    date: new Date(new Date().setDate(new Date().getDate() - timeFrame.daysAgo)).toDateString(),
-                    price: `$${pastPrice.toLocaleString()}`,
-                    change: (((btcPrice - pastPrice) / pastPrice) * 100).toFixed(2) + "%",
-                  }
-                : null;
-            })
-          );
-    
-          setBtcPriceChart([
-            { label: "Today", date: new Date().toDateString(), price: btcPrice, change: null },
-            ...historicalPrices.filter((entry) => entry !== null),
-          ]);
-    
-          let currentBlockHeight = getCachedData("block_height");
-          if (!currentBlockHeight) {
-            const blockHeightResponse = await fetch("https://blockchain.info/q/getblockcount");
-            currentBlockHeight = await blockHeightResponse.text();
-            cacheData("block_height", currentBlockHeight);
-          }
-    
-          const halvingInterval = 210000;
-          const nextHalvingBlock = Math.ceil(currentBlockHeight / halvingInterval) * halvingInterval;
-          const blocksToNextHalving = nextHalvingBlock - currentBlockHeight;
-          const averageBlockTime = 10 * 60 * 1000;
-          const nextHalvingDate = new Date(Date.now() + blocksToNextHalving * averageBlockTime);
-    
-          startCountdown(nextHalvingDate);
-        } catch (error) {
-          console.error("Error fetching Bitcoin data:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-    
-      const startCountdown = (halvingDate) => {
-        if (timerRef.current) clearInterval(timerRef.current);
-    
-        timerRef.current = setInterval(() => {
-          const now = new Date().getTime();
-          const timeLeft = halvingDate.getTime() - now;
-    
-          if (timeLeft > 0) {
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    
-            setRemainingTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+            await new Promise((res) => setTimeout(res, delay));
           } else {
-            setRemainingTime("Halving is happening now!");
-            clearInterval(timerRef.current);
+            throw new Error(`API request failed: ${text}`);
           }
-        }, 1000);
-      };
-    
-      fetchData();
-    
-      const socket = new WebSocket("wss://ws.coincap.io/prices?assets=bitcoin");
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.bitcoin) {
-          setBtcPrice(`$${parseFloat(data.bitcoin).toLocaleString()}`);
+        } catch (error) {
+          console.error("Fetch error:", error);
         }
-      };
-    
-      return () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-        socket.close();
-      };
-    }, []);
-    
+      }
+      throw new Error("Max retries exceeded");
+    };
 
-  
-  
-  return (
+    const cacheData = (key, data, ttl = 60000) => {
+      localStorage.setItem(
+        key,
+        JSON.stringify({ data, expiry: Date.now() + ttl })
+      );
+    };
 
+    const getCachedData = (key) => {
+      const cached = localStorage.getItem(key);
+      if (!cached) return null;
 
+      const parsed = JSON.parse(cached);
+      if (Date.now() > parsed.expiry) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return parsed.data;
+    };
 
+    const fetchData = async () => {
+      try {
+        let coingeckoData = getCachedData("coingecko_global");
+        if (!coingeckoData) {
+          coingeckoData = await fetchWithRetry(
+            "https://api.coingecko.com/api/v3/global"
+          );
+          cacheData("coingecko_global", coingeckoData);
+        }
 
-    
-    <Layout header={4}>
-          <Head>
-      {/* Primary Meta Tags */}
-      <title>Oracle Development Group - Reliable Cryptocurrency Mining Solutions</title>
-      <meta
-        name="description"
-        content="Oracle Development Group offers top-tier crypto mining solutions, including premium hosting, real-time market insights, and optimized mining equipment. Join us today for seamless mining experiences!"
-      />
-      <meta name="keywords" content="crypto mining, bitcoin, ethereum, hosting, blockchain, mining profitability, oracle development group" />
-      <meta name="robots" content="index, follow" />
-      <meta name="author" content="Oracle Development Group" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://oracledevelopmentgroup.com" />
-      <meta property="og:title" content="Oracle Development Group - Reliable Cryptocurrency Mining Solutions" />
-      <meta property="og:description" content="Providing top-quality mining tools, optimized hosting, and real-time market data to enhance crypto profitability." />
-      <meta property="og:image" content="https://oracledevelopmentgroup.com/assets/images/seo-image.jpg" />
+        setMarketCap(
+          `$${coingeckoData.data.total_market_cap.usd.toLocaleString()}`
+        );
+        setBtcVolume(
+          `$${coingeckoData.data.total_volume.usd.toLocaleString()}`
+        );
+        setBtcMarketCap(
+          `${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`
+        );
+        setBtcDominance(
+          `${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`
+        );
 
-      {/* Twitter Cards */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content="https://oracledevelopmentgroup.com" />
-      <meta name="twitter:title" content="Oracle Development Group - Reliable Cryptocurrency Mining Solutions" />
-      <meta name="twitter:description" content="Join Oracle Development Group for premium crypto mining tools, secure hosting, and the latest market insights." />
-      <meta name="twitter:image" content="https://oracledevelopmentgroup.com/assets/images/seo-image.jpg" />
+        let miningDifficulty = getCachedData("mining_difficulty");
+        if (!miningDifficulty) {
+          const blockchainResponse = await fetch(
+            "https://blockchain.info/q/getdifficulty"
+          );
+          miningDifficulty = parseFloat(
+            await blockchainResponse.text()
+          ).toFixed(2);
+          cacheData("mining_difficulty", miningDifficulty);
+        }
+        setMiningDifficulty(miningDifficulty);
 
-      {/* Canonical URL */}
-      <link rel="canonical" href="https://oracledevelopmentgroup.com" />
+        const fetchHistoricalPrice = async (daysAgo) => {
+          const pastTimestamp = new Date();
+          pastTimestamp.setDate(pastTimestamp.getDate() - daysAgo);
+          const unixTime = Math.floor(pastTimestamp.getTime() / 1000);
 
-      {/* Favicon */}
-      <link rel="icon" href="/favicon.ico" />
+          const response = await fetch(
+            `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${unixTime}&to=${
+              unixTime + 86400
+            }`
+          );
+          const data = await response.json();
 
-      {/* Structured Data for Rich Snippets */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": "Oracle Development Group",
-          "url": "https://oracledevelopmentgroup.com",
-          "logo": "https://oracledevelopmentgroup.com/assets/images/logo.png",
-          "description": "We provide expert-level cryptocurrency mining solutions, including hosting, equipment, and live market insights.",
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+1-555-123-4567",
-            "contactType": "customer service",
-            "areaServed": "Global",
-            "availableLanguage": ["English"]
+          if (data.prices && data.prices.length > 0) {
+            return parseFloat(data.prices[0][1]);
+          } else {
+            return null;
+          }
+        };
+
+        const timeFrames = [
+          { label: "24 hours ago", daysAgo: 1 },
+          { label: "1 week ago", daysAgo: 7 },
+          { label: "1 month ago", daysAgo: 30 },
+          { label: "1 year ago", daysAgo: 365 },
+        ];
+
+        const historicalPrices = await Promise.all(
+          timeFrames.map(async (timeFrame) => {
+            const pastPrice = await fetchHistoricalPrice(timeFrame.daysAgo);
+            return pastPrice
+              ? {
+                  label: timeFrame.label,
+                  date: new Date(
+                    new Date().setDate(new Date().getDate() - timeFrame.daysAgo)
+                  ).toDateString(),
+                  price: `$${pastPrice.toLocaleString()}`,
+                  change:
+                    (((btcPrice - pastPrice) / pastPrice) * 100).toFixed(2) +
+                    "%",
+                }
+              : null;
+          })
+        );
+
+        setBtcPriceChart([
+          {
+            label: "Today",
+            date: new Date().toDateString(),
+            price: btcPrice,
+            change: null,
           },
-          "sameAs": [
-            "https://facebook.com/oracledevelopment",
-            "https://twitter.com/oracledev",
-            "https://linkedin.com/company/oracledevelopment"
-          ]
-        })}
-      </script>
-    </Head>
+          ...historicalPrices.filter((entry) => entry !== null),
+        ]);
+
+        let currentBlockHeight = getCachedData("block_height");
+        if (!currentBlockHeight) {
+          const blockHeightResponse = await fetch(
+            "https://blockchain.info/q/getblockcount"
+          );
+          currentBlockHeight = await blockHeightResponse.text();
+          cacheData("block_height", currentBlockHeight);
+        }
+
+        const halvingInterval = 210000;
+        const nextHalvingBlock =
+          Math.ceil(currentBlockHeight / halvingInterval) * halvingInterval;
+        const blocksToNextHalving = nextHalvingBlock - currentBlockHeight;
+        const averageBlockTime = 10 * 60 * 1000;
+        const nextHalvingDate = new Date(
+          Date.now() + blocksToNextHalving * averageBlockTime
+        );
+
+        startCountdown(nextHalvingDate);
+      } catch (error) {
+        console.error("Error fetching Bitcoin data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const startCountdown = (halvingDate) => {
+      if (timerRef.current) clearInterval(timerRef.current);
+
+      timerRef.current = setInterval(() => {
+        const now = new Date().getTime();
+        const timeLeft = halvingDate.getTime() - now;
+
+        if (timeLeft > 0) {
+          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeLeft % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+          setRemainingTime(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+        } else {
+          setRemainingTime("Halving is happening now!");
+          clearInterval(timerRef.current);
+        }
+      }, 1000);
+    };
+
+    fetchData();
+
+    const socket = new WebSocket("wss://ws.coincap.io/prices?assets=bitcoin");
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.bitcoin) {
+        setBtcPrice(`$${parseFloat(data.bitcoin).toLocaleString()}`);
+      }
+    };
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      socket.close();
+    };
+  }, []);
+
+  return (
+    <Layout header={4}>
+      <Head>
+        {/* Primary Meta Tags */}
+        <title>
+          Oracle Development Group - Reliable Cryptocurrency Mining Solutions
+        </title>
+        <meta
+          name="description"
+          content="Oracle Development Group offers top-tier crypto mining solutions, including premium hosting, real-time market insights, and optimized mining equipment. Join us today for seamless mining experiences!"
+        />
+        <meta
+          name="keywords"
+          content="crypto mining, bitcoin, ethereum, hosting, blockchain, mining profitability, oracle development group"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Oracle Development Group" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://oracledevelopmentgroup.com" />
+        <meta
+          property="og:title"
+          content="Oracle Development Group - Reliable Cryptocurrency Mining Solutions"
+        />
+        <meta
+          property="og:description"
+          content="Providing top-quality mining tools, optimized hosting, and real-time market data to enhance crypto profitability."
+        />
+        <meta
+          property="og:image"
+          content="https://oracledevelopmentgroup.com/assets/images/seo-image.jpg"
+        />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://oracledevelopmentgroup.com" />
+        <meta
+          name="twitter:title"
+          content="Oracle Development Group - Reliable Cryptocurrency Mining Solutions"
+        />
+        <meta
+          name="twitter:description"
+          content="Join Oracle Development Group for premium crypto mining tools, secure hosting, and the latest market insights."
+        />
+        <meta
+          name="twitter:image"
+          content="https://oracledevelopmentgroup.com/assets/images/seo-image.jpg"
+        />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://oracledevelopmentgroup.com" />
+
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
+
+        {/* Structured Data for Rich Snippets */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Oracle Development Group",
+            url: "https://oracledevelopmentgroup.com",
+            logo: "https://oracledevelopmentgroup.com/assets/images/logo.png",
+            description:
+              "We provide expert-level cryptocurrency mining solutions, including hosting, equipment, and live market insights.",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+1-555-123-4567",
+              contactType: "customer service",
+              areaServed: "Global",
+              availableLanguage: ["English"],
+            },
+            sameAs: [
+              "https://facebook.com/oracledevelopment",
+              "https://twitter.com/oracledev",
+              "https://linkedin.com/company/oracledevelopment",
+            ],
+          })}
+        </script>
+      </Head>
       <section className="hero-area-one">
         <Slider {...heroSliderOne} className="hero-slider-one">
           <div className="single-slider">
@@ -564,146 +617,162 @@ const Index = () => {
       {/*====== End Features Section ======*/}
       {/*====== Start About Section ======*/}
       <section className="about-section p-r z-1 pt-150 pb-100">
-  <div style={{ paddingLeft: "10%", paddingRight: "10%" }}>
-    <div className="row align-items-center">
-      {/* Left Side - Cryptocurrency Data */}
-      <div className="col-xl-7 col-lg-8">
-        <div className="about-one_content-box mb-50">
-          <div className="section-title section-title-left mb-30 wow fadeInUp">
-            <span className="sub-title">Live Crypto Data</span>
-            <h2>Stay Updated with Real-Time Cryptocurrency Insights</h2>
+        <div style={{ paddingLeft: "10%", paddingRight: "10%" }}>
+          <div className="row align-items-center">
+            {/* Left Side - Cryptocurrency Data */}
+            <div className="col-xl-7 col-lg-8">
+              <div className="about-one_content-box mb-50">
+                <div className="section-title section-title-left mb-30 wow fadeInUp">
+                  <span className="sub-title">Live Crypto Data</span>
+                  <h2>Stay Updated with Real-Time Cryptocurrency Insights</h2>
+                </div>
+
+                {/* Countdown Timer */}
+                <div className="crypto-data wow fadeInDown mb-35">
+                  <h3 className="mb-3 text-center">
+                    Time to Next Bitcoin Halving
+                  </h3>
+                  <div className="countdown-timer">
+                    <p className="time text-center">{remainingTime}</p>
+                  </div>
+                </div>
+
+                {/* Cryptocurrency Metrics */}
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <div className="data-card text-center">
+                      <strong>Total Market Cap</strong>
+                      <p className="data-value">
+                        {loading ? "Loading..." : marketCap}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="data-card text-center">
+                      <strong>BTC 24h Volume</strong>
+                      <p className="data-value">
+                        {loading ? "Loading..." : btcVolume}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="data-card text-center">
+                      <strong>Mining Difficulty</strong>
+                      <p className="data-value">
+                        {loading ? "Loading..." : miningDifficulty}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="data-card text-center">
+                      <strong
+                        className="m-0 p-0"
+                        style={{ margin: "0px", padding: "0px" }}
+                      >
+                        Live Bitcoin Price
+                      </strong>
+                      <p className="data-value">
+                        {loading ? "Loading..." : btcPrice}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bitcoin Price Chart */}
+                {/* <div className="mt-4">
+                  <h4 className="text-center mb-3">Bitcoin Price History</h4>
+                  <div className="table-container">
+                    <table className="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Price (USD)</th>
+                          <th>Change (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {btcPriceChart.map((entry, index) => (
+                          <tr key={index}>
+                            <td>{entry.date}</td>
+                            <td>{entry.price.toLocaleString()}</td>
+                            <td
+                              style={{
+                                color: entry.change >= 0 ? "green" : "red",
+                              }}
+                            >
+                              {entry.change ? `${entry.change}%` : "N/A"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div> */}
+              </div>
+            </div>
+
+            {/* Right Side - Image */}
+            <div className="col-xl-5 col-lg-4">
+              <div className="about-one_image-box p-r mb-50 pl-100">
+                <div className="about-img_two wow fadeInRight">
+                  <img
+                    style={{ borderRadius: "30px" }}
+                    src="assets/images/about/aboutimg_1.jpeg"
+                    alt="About Image"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-
-          {/* Countdown Timer */}
-          <div className="crypto-data wow fadeInDown mb-35">
-            <h3 className="mb-3 text-center">Time to Next Bitcoin Halving</h3>
-            <div className="countdown-timer">
-              <p className="time text-center">{remainingTime}</p>
-            </div>
-          </div>
-
-          {/* Cryptocurrency Metrics */}
-          <div className="row">
-            <div className="col-md-6 mb-3">
-              <div className="data-card text-center">
-                <strong>Total Market Cap</strong>
-                <p className="data-value">{loading ? "Loading..." : marketCap}</p>
-              </div>
-            </div>
-            <div className="col-md-6 mb-3">
-              <div className="data-card text-center">
-                <strong>BTC 24h Volume</strong>
-                <p className="data-value">{loading ? "Loading..." : btcVolume}</p>
-              </div>
-            </div>
-            <div className="col-md-6 mb-3">
-              <div className="data-card text-center">
-                <strong>Mining Difficulty</strong>
-                <p className="data-value">
-                  {loading ? "Loading..." : miningDifficulty}
-                </p>
-              </div>
-            </div>
-            <div className="col-md-6 mb-3">
-              <div className="data-card text-center">
-                <strong className="m-0 p-0" style={{margin: '0px', padding: '0px'}}>Live Bitcoin Price</strong>
-                <p className="data-value">{loading ? "Loading..." : btcPrice}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Bitcoin Price Chart */}
-          <div className="mt-4">
-  <h4 className="text-center mb-3">Bitcoin Price History</h4>
-  <div className="table-container">
-    <table className="table table-bordered">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Price (USD)</th>
-          <th>Change (%)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {btcPriceChart.map((entry, index) => (
-          <tr key={index}>
-            <td>{entry.date}</td>
-            <td>{entry.price.toLocaleString()}</td>
-            <td style={{ color: entry.change >= 0 ? "green" : "red" }}>
-              {entry.change ? `${entry.change}%` : "N/A"}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
-
         </div>
-      </div>
 
-      {/* Right Side - Image */}
-      <div className="col-xl-5 col-lg-4">
-        <div className="about-one_image-box p-r mb-50 pl-100">
-          <div className="about-img_two wow fadeInRight">
-            <img
-              style={{ borderRadius: "30px" }}
-              src="assets/images/about/aboutimg_1.jpeg"
-              alt="About Image"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <style jsx>{`
-    .countdown-timer .time {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #ff5722;
-    }
-    .data-card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 10px 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-    .data-card:hover {
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-    }
-    .data-card h3 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-      color: #333;
-    }
-    .data-value {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #2c2c2c;
-    }
-    .table-container {
-      max-height: 250px;
-      overflow-y: auto;
-    }
-    .table-container table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0 auto;
-    }
-    .table-container th,
-    .table-container td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
-    .table-container th {
-      background-color: #2c2c2c;
-      color: #fff;
-    }
-  `}</style>
-</section>
+        <style jsx>{`
+          .countdown-timer .time {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff5722;
+          }
+          .data-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+          }
+          .data-card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+          }
+          .data-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #333;
+          }
+          .data-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c2c2c;
+          }
+          .table-container {
+            max-height: 250px;
+            overflow-y: auto;
+          }
+          .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+          }
+          .table-container th,
+          .table-container td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+          }
+          .table-container th {
+            background-color: #2c2c2c;
+            color: #fff;
+          }
+        `}</style>
+      </section>
 
       {/*====== End About Section ======*/}
       {/*====== Start Service Section ======*/}
@@ -988,21 +1057,28 @@ const Index = () => {
             </div>
             <div className="col-lg-6">
               <div className="offer-one_content-box content-box-gap mb-20">
-              <div style = {{backgroundColor :'white', paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px',  borderRadius: '10px'}}>
-                <div className="section-title section-title-left mb-20 wow fadeInUp">
-                  <span className="sub-title">What We Offers</span>
-                  <h2>People Choose Us for Exceptional Mining Solutions</h2>
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    paddingLeft: "20px",
+                    paddingRight: "20px",
+                    paddingBottom: "20px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <div className="section-title section-title-left mb-20 wow fadeInUp">
+                    <span className="sub-title">What We Offers</span>
+                    <h2>People Choose Us for Exceptional Mining Solutions</h2>
+                  </div>
+
+                  <p style={{ color: "black" }}>
+                    At ORACLE Development Group, we take pride in delivering
+                    industry-leading crypto mining solutions. From reliable
+                    hosting to top-tier equipment, our commitment to excellence
+                    ensures our clients achieve maximum profitability and
+                    performance in their mining operations.
+                  </p>
                 </div>
-                
-                <p style={{color: 'black' }}>
-                  At ORACLE Development Group, we take pride in delivering
-                  industry-leading crypto mining solutions. From reliable
-                  hosting to top-tier equipment, our commitment to excellence
-                  ensures our clients achieve maximum profitability and
-                  performance in their mining operations.
-                </p>
-                </div>
-               
               </div>
             </div>
           </div>
@@ -1142,124 +1218,124 @@ const Index = () => {
       {/*====== End Testimonial Section ======*/}
       {/*====== Start Contact Section ======*/}
       <section className="contact-one pt-150 p-r z-2">
-      <div className="container-fluid">
-        <div className="row no-gutters">
-          <div className="col-lg-6">
-            <div className="contact-one_content-box wow fadeInLeft">
-              <div className="contact-wrapper">
-                <div className="section-title section-title-left mb-40">
-                  <span className="sub-title">Contact Us</span>
-                  <h3>
-                    Reach out to us now and let’s make your mining goals a
-                    reality!
-                  </h3>
-                </div>
-                <div className="contact-form">
-                  <form onSubmit={handleSubmit}>
-                    <div className="form_group">
-                      <input
-                        type="text"
-                        className="form_control"
-                        placeholder="Full Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="form_group">
-                      <input
-                        type="email"
-                        className="form_control"
-                        placeholder="Email Address"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="form_group">
-                      <textarea
-                        className="form_control"
-                        placeholder="Write Message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    {error && <p className="error-text">{error}</p>}
-                    {success && <p className="success-text">{success}</p>}
-                    <div className="form_group">
-                      <button
-                        className="main-btn yellow-bg"
-                        style={{ color: "white" }}
-                      >
-                        Send Message
-                      </button>
-                    </div>
-                  </form>
+        <div className="container-fluid">
+          <div className="row no-gutters">
+            <div className="col-lg-6">
+              <div className="contact-one_content-box wow fadeInLeft">
+                <div className="contact-wrapper">
+                  <div className="section-title section-title-left mb-40">
+                    <span className="sub-title">Contact Us</span>
+                    <h3>
+                      Reach out to us now and let’s make your mining goals a
+                      reality!
+                    </h3>
+                  </div>
+                  <div className="contact-form">
+                    <form onSubmit={handleSubmit}>
+                      <div className="form_group">
+                        <input
+                          type="text"
+                          className="form_control"
+                          placeholder="Full Name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="form_group">
+                        <input
+                          type="email"
+                          className="form_control"
+                          placeholder="Email Address"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="form_group">
+                        <textarea
+                          className="form_control"
+                          placeholder="Write Message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      {error && <p className="error-text">{error}</p>}
+                      {success && <p className="success-text">{success}</p>}
+                      <div className="form_group">
+                        <button
+                          className="main-btn yellow-bg"
+                          style={{ color: "white" }}
+                        >
+                          Send Message
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-lg-6">
-            <div
-              className="contact-one_information-box bg_cover wow fadeInRight"
-              style={{
-                borderRadius: "30px",
-                backgroundImage: "url(assets/images/bg/miner.png)",
-              }}
-            >
+            <div className="col-lg-6">
               <div
-                className="information-box"
-                style={{ backgroundColor: "white" }}
+                className="contact-one_information-box bg_cover wow fadeInRight"
+                style={{
+                  borderRadius: "30px",
+                  backgroundImage: "url(assets/images/bg/miner.png)",
+                }}
               >
-                <h3>Contact Us</h3>
-                <p>
-                  Have any questions?
-                  <br />
-                  Need the assistance of any kind?
-                  <br />
-                  Start your successful mining today!
-                </p>
-                <div className="information-item_one d-flex mb-25">
-                  <div className="icon">
-                    <i className="flaticon-placeholder" />
+                <div
+                  className="information-box"
+                  style={{ backgroundColor: "white" }}
+                >
+                  <h3>Contact Us</h3>
+                  <p>
+                    Have any questions?
+                    <br />
+                    Need the assistance of any kind?
+                    <br />
+                    Start your successful mining today!
+                  </p>
+                  <div className="information-item_one d-flex mb-25">
+                    <div className="icon">
+                      <i className="flaticon-placeholder" />
+                    </div>
+                    <div className="info">
+                      <span className="sub-title mb-1">Location</span>
+                      <h5>55 Main Street, New York</h5>
+                    </div>
                   </div>
-                  <div className="info">
-                    <span className="sub-title mb-1">Location</span>
-                    <h5>55 Main Street, New York</h5>
+                  <div className="information-item_one d-flex mb-25">
+                    <div className="icon">
+                      <i className="flaticon-email" />
+                    </div>
+                    <div className="info">
+                      <span className="sub-title mb-1">Email Address</span>
+                      <h5>
+                        <a href="mailto:hotline@gmail.com">hotline@gmail.com</a>
+                      </h5>
+                    </div>
                   </div>
-                </div>
-                <div className="information-item_one d-flex mb-25">
-                  <div className="icon">
-                    <i className="flaticon-email" />
-                  </div>
-                  <div className="info">
-                    <span className="sub-title mb-1">Email Address</span>
-                    <h5>
-                      <a href="mailto:hotline@gmail.com">hotline@gmail.com</a>
-                    </h5>
-                  </div>
-                </div>
-                <div className="information-item_one d-flex mb-25">
-                  <div className="icon">
-                    <i className="flaticon-phone-call" />
-                  </div>
-                  <div className="info">
-                    <span className="sub-title mb-1">Phone Number</span>
-                    <h5>
-                      <a href="tel:+0123456789">+012(345) 67 89</a>
-                    </h5>
+                  <div className="information-item_one d-flex mb-25">
+                    <div className="icon">
+                      <i className="flaticon-phone-call" />
+                    </div>
+                    <div className="info">
+                      <span className="sub-title mb-1">Phone Number</span>
+                      <h5>
+                        <a href="tel:+0123456789">+012(345) 67 89</a>
+                      </h5>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
       {/*====== End Contact Section ======*/}
       {/*====== Start Blog Section ======*/}
       <section className="blog-section p-r z-1 pt-130 pb-100">
