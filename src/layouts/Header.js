@@ -85,12 +85,12 @@ const Header1 = () => (
               <span className="text">
                 Welcome to Agriculture &amp; Organic Food Template
               </span>
-              <span className="lang-dropdown">
+              {/* <span className="lang-dropdown">
                 <select className="wide">
                   <option value={1}>English</option>
                   <option value={2}>French</option>
                 </select>
-              </span>
+              </span> */}
             </div>
           </div>
           <div className="col-xl-6 col-lg-12 col-md-12 col-6">
@@ -436,7 +436,9 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
         setBtcVolume(
           `$${coingeckoData.data.total_volume.usd.toLocaleString()}`
         );
-        setBtcDominance(`${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`);
+        setBtcDominance(
+          `${coingeckoData.data.market_cap_percentage.btc.toFixed(2)}%`
+        );
         setBtcMarketCap(
           `$${(coingeckoData.data.total_market_cap.btc || 0).toLocaleString()}`
         );
@@ -473,42 +475,42 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
               <div className="col">
                 <span className="crypto-data-item">
                   <strong className="mt-2">{marketCap || "Loading..."}</strong>
-                  
                   Total Market Cap
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
                   <strong className="mt-2">{btcVolume || "Loading..."}</strong>
-                 
                   BTC 24h Vol
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mt-2">{miningDifficulty || "Loading..."}</strong>
-                 
+                  <strong className="mt-2">
+                    {miningDifficulty || "Loading..."}
+                  </strong>
                   Mining Difficulty
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
                   <strong className="mt-2">{btcPrice || "Loading..."}</strong>
-                  
                   Live Bitcoin Price
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mt-2">{btcDominance || "Loading..."}</strong>
-                 
+                  <strong className="mt-2">
+                    {btcDominance || "Loading..."}
+                  </strong>
                   BTC Dominance
                 </span>
               </div>
               <div className="col">
                 <span className="crypto-data-item">
-                  <strong className="mt-2">{btcMarketCap || "Loading..."}</strong>
-                
+                  <strong className="mt-2">
+                    {btcMarketCap || "Loading..."}
+                  </strong>
                   BTC Market Cap
                 </span>
               </div>
@@ -522,12 +524,12 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
             <div className="row align-items-center">
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
                 <div className="top-bar-left d-flex align-items-center">
-                  <span className="lang-dropdown">
+                  {/* <span className="lang-dropdown">
                     <select className="wide">
                       <option value={1}>English</option>
                       <option value={2}>French</option>
                     </select>
-                  </span>
+                  </span> */}
                 </div>
               </div>
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
@@ -616,7 +618,7 @@ const Header4 = ({ overlayPanel, togglePanel }) => {
       </header>
       <style jsx>{`
         .crypto-data-bar {
-          border-bottom: 1px solid #1F1E17;
+          border-bottom: 1px solid #1f1e17;
           background-color: #0f0f0c;
         }
         .crypto-data-item {
@@ -644,12 +646,12 @@ const Header5 = ({ overlayPanel, togglePanel }) => {
             <div className="row align-items-center">
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
                 <div className="top-bar-left d-flex align-items-center">
-                  <span className="lang-dropdown">
+                  {/* <span className="lang-dropdown">
                     <select className="wide">
                       <option value={1}>English</option>
                       <option value={2}>French</option>
                     </select>
-                  </span>
+                  </span> */}
                 </div>
               </div>
               <div className="col-xl-6 col-lg-12 col-md-12 col-6">
@@ -721,13 +723,11 @@ const Header5 = ({ overlayPanel, togglePanel }) => {
                 <div className="nav-menu">
                   <Menu2 /> {/* Replacing Menu Component */}
                   <MobileHeader />
-                  
                 </div>
               </div>
 
               {/* Nav Right Item */}
               <div className="nav-right-item d-flex align-items-center">
-               
                 {/* <div className="menu-button">
                   <Link href="/contact">
                     <a className="main-btn bordered-btn bordered-yellow">
@@ -749,134 +749,7 @@ const Header5 = ({ overlayPanel, togglePanel }) => {
   );
 };
 
-const DefaultHeader = () => (
-  <header className="header-area">
-    <div className="header-top-bar top-bar-one dark-black-bg">
-      <div className="container-fluid">
-        <div className="row align-items-center">
-          <div className="col-xl-6 col-lg-12 col-md-12 col-6">
-            <div className="top-bar-left d-flex align-items-center">
-              <span className="text">
-                Welcome to Agriculture &amp; Organic Food Template
-              </span>
-              <span className="lang-dropdown">
-                <select className="wide">
-                  <option value={1}>English</option>
-                  <option value={2}>French</option>
-                </select>
-              </span>
-            </div>
-          </div>
-          <div className="col-xl-6 col-lg-12 col-md-12 col-6">
-            <div className="top-bar-right">
-              <span className="text">
-                <i className="far fa-clock" />
-                Opening Hours : Sunday- Friday, 08:00 am - 05:00pm
-              </span>
-              <ul className="social-link">
-                <li>
-                  <a href="#">
-                    <i className="fab fa-facebook-f" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-twitter" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-linkedin" />
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i className="fab fa-youtube" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {/* Header Navigation */}
-    <div className="header-navigation navigation-three">
-      <div className="nav-overlay" />
-      <div className="container-fluid">
-        <div className="primary-menu">
-          {/* Site Branding */}
-          <div className="site-branding">
-            <Link href="/">
-              <a className="brand-logo">
-                <img src="assets/images/logo/logo-3.png" alt="Site Logo" />
-              </a>
-            </Link>
-            <Link href="/">
-              <a className="sticky-logo">
-                <img src="assets/images/logo/logo-1.png" alt="Site Logo" />
-              </a>
-            </Link>
-          </div>
-          {/* Nav inner Menu */}
-          <div className="nav-inner-menu">
-            {/* Nav Menu */}
-            <div className="nav-menu">
-              {/*=== Mobile Logo ===*/}
-              <div className="mobile-logo mb-30 d-block d-xl-none text-center">
-                <Link href="/">
-                  <a className="brand-logo">
-                    <img src="assets/images/logo/logo-1.png" alt="Site Logo" />
-                  </a>
-                </Link>
-              </div>
-              {/*=== Navbar Call Button ===*/}
-              <div className="call-button text-center">
-                <span>
-                  <i className="far fa-phone" />
-                  <a href="tel:+012(345)678">+012 (345) 678</a>
-                </span>
-              </div>
-              {/*=== Main Menu ===*/}
-              <Menu />
-              <MobileHeader />
-              {/*=== Navbar Menu Button ===*/}
-              <div className="menu-button">
-                <Link href="/contact">
-                  <a className="main-btn btn-yellow">Get a Quote</a>
-                </Link>
-              </div>
-            </div>
-            {/*=== Nav Right Item ===*/}
-            <div className="nav-right-item d-flex align-items-center">
-              <div className="call-button">
-                <span>
-                  <i className="far fa-phone" />
-                  <a href="tel:+012(345)678">+012 (345) 678</a>
-                </span>
-              </div>
-              <div className="menu-button">
-                <Link href="/contact">
-                  <a className="main-btn btn-yellow">Get a Quote</a>
-                </Link>
-              </div>
-              <div className="bar-item">
-                <a href="#">
-                  <img src="assets/images/bar.png" alt="" />
-                </a>
-              </div>
-              <div className="navbar-toggler">
-                <span />
-                <span />
-                <span />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-);
+
 
 const Menu = () => {
   const [user, setUser] = useState(null); // User state
@@ -913,29 +786,27 @@ const Menu = () => {
     }
   };
 
-
-
   return (
     <nav className="main-menu d-none d-xl-block">
       <ul>
-      <li>
-        <Link href="/">Home</Link>
-      </li>
-      <li>
-        <Link href="/about">Who We Are</Link>
-      </li>
+        <li>
+          <Link href="/">Home</Link>
+        </li>
+        <li>
+          <Link href="/about">Who We Are</Link>
+        </li>
 
-      <li>
-        <Link href="/rates">Start Mining</Link>
-      </li>
-   
+        <li>
+          <Link href="/rates">Start Mining</Link>
+        </li>
+
         <li className="menu-item has-children">
           <a href="#">Shop</a>
           <ul className="sub-menu">
             <li>
               <Link href="/products">Our Products</Link>
             </li>
-           
+
             <li>
               <Link href="/cart">Cart</Link>
             </li>
@@ -944,51 +815,47 @@ const Menu = () => {
             </li>
           </ul>
         </li>
-       
-        <li>
-        <Link href="/calculator">Calculator</Link>
-      </li>
 
-      <li>
-        <Link href="/contact">Contact Us</Link>
-      </li>
+        <li>
+          <Link href="/calculator">Calculator</Link>
+        </li>
+
+        <li>
+          <Link href="/contact">Contact Us</Link>
+        </li>
 
         {/* Login/Logout/User Dropdown */}
-        
-          {user ? (
-            <>
-             <li className="menu-item has-children">
-          <a href="#">{user.email}</a>
-          <ul className="sub-menu">
-            <li>
-              <Link href="/cart">Cart</Link>
-            </li>
-            <li>
-              <Link href="/orders">My Orders</Link>
-            </li>
-            <li>
-              <a href = "/" onClick={handleLogout}>Log Out</a>
-            </li>
-          </ul>
-        </li>
-       
-        
 
-          
-              {isAdmin && (
-                <Link href="/addminer">
-                  <a className="main-btn btn-yellow">
-                    Admin Panel
+        {user ? (
+          <>
+            <li className="menu-item has-children">
+              <a href="#">{user.email}</a>
+              <ul className="sub-menu">
+                <li>
+                  <Link href="/cart">Cart</Link>
+                </li>
+                <li>
+                  <Link href="/orders">My Orders</Link>
+                </li>
+                <li>
+                  <a href="/" onClick={handleLogout}>
+                    Log Out
                   </a>
-                </Link>
-              )}
-            </>
-          ) : (
-            <Link href="/login">
-              <a className="main-btn btn-yellow">Login</a>
-            </Link>
-          )}
-       
+                </li>
+              </ul>
+            </li>
+
+            {isAdmin && (
+              <Link href="/addminer">
+                <a className="main-btn btn-yellow">Admin Panel</a>
+              </Link>
+            )}
+          </>
+        ) : (
+          <Link href="/login">
+            <a className="main-btn btn-yellow">Login</a>
+          </Link>
+        )}
       </ul>
     </nav>
   );
@@ -1029,15 +896,10 @@ const Menu2 = () => {
     }
   };
 
-
-
   return (
     <nav className="main-menu d-none d-xl-block">
       <ul>
-
-
-
-      <li>
+        <li>
           <Link href="/addminer">Add Miner</Link>
         </li>
 
@@ -1053,43 +915,42 @@ const Menu2 = () => {
           <Link href="/messages">View Messages</Link>
         </li>
 
-      
-        {/* Login/Logout/User Dropdown */}
-        
-          {user ? (
-            <>
-             <li className="menu-item has-children">
-          <a href="#">{user.email}</a>
-          <ul className="sub-menu">
-            <li>
-              <Link href="/cart">Cart</Link>
-            </li>
-            <li>
-              <Link href="/orders">My Orders</Link>
-            </li>
-            <li>
-              <a href = "/" onClick={handleLogout}>Log Out</a>
-            </li>
-          </ul>
+        <li>
+          <Link href="/sendnewsletter">Newsletter</Link>
         </li>
-       
-        
 
-          
-              {isAdmin && (
-                <Link href="/">
-                  <a className="main-btn btn-yellow">
-                    User Panel
+        {/* Login/Logout/User Dropdown */}
+
+        {user ? (
+          <>
+            <li className="menu-item has-children">
+              <a href="#">{user.email}</a>
+              <ul className="sub-menu">
+                <li>
+                  <Link href="/cart">Cart</Link>
+                </li>
+                <li>
+                  <Link href="/orders">My Orders</Link>
+                </li>
+                <li>
+                  <a href="/" onClick={handleLogout}>
+                    Log Out
                   </a>
-                </Link>
-              )}
-            </>
-          ) : (
-            <Link href="/login">
-              <a className="main-btn btn-yellow">Login</a>
-            </Link>
-          )}
-       
+                </li>
+              </ul>
+            </li>
+
+            {isAdmin && (
+              <Link href="/">
+                <a className="main-btn btn-yellow">User Panel</a>
+              </Link>
+            )}
+          </>
+        ) : (
+          <Link href="/login">
+            <a className="main-btn btn-yellow">Login</a>
+          </Link>
+        )}
       </ul>
     </nav>
   );

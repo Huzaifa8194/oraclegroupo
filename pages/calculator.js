@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Layout from "../src/layouts/Layout";
 import { toast } from "react-toastify";
+
+import Head from "next/head";
 const ProfitabilityCalculator = () => {
   const [hashrate, setHashrate] = useState("");
   const [unit, setUnit] = useState("MH");
@@ -81,10 +83,82 @@ const ProfitabilityCalculator = () => {
       console.error("Error calculating profitability:", error);
     }
   };
+  const pageUrl = "https://oracledevelopmentgroup.com/profitability-calculator";
 
   return (
     <Layout header = {4}>
     
+    <Head>
+      {/* Dynamic Title */}
+      <title>Crypto Mining Profitability Calculator | BTC Mining ROI</title>
+
+      {/* Meta Description */}
+      <meta
+        name="description"
+        content="Calculate your Bitcoin and crypto mining profitability with our easy-to-use profitability calculator. Estimate earnings, electricity costs, and net profits in real-time."
+      />
+
+      {/* Meta Keywords */}
+      <meta
+        name="keywords"
+        content="crypto mining calculator, bitcoin mining profitability, BTC miner ROI, mining profit estimator, electricity cost calculator, Ethereum mining calculator, SHA-256 mining earnings"
+      />
+      
+      <meta name="robots" content="index, follow" />
+      <meta name="author" content="Oracle Development Group" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={pageUrl} />
+      <meta property="og:title" content="Crypto Mining Profitability Calculator | BTC Mining ROI" />
+      <meta property="og:description" content="Easily calculate your crypto mining profitability, BTC earnings, and electricity costs with our advanced profitability calculator. Try it now!" />
+      <meta property="og:image" content="https://oracledevelopmentgroup.com/assets/images/mining-calculator.jpg" />
+
+      {/* Twitter Cards */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={pageUrl} />
+      <meta name="twitter:title" content="Crypto Mining Profitability Calculator | BTC Mining ROI" />
+      <meta name="twitter:description" content="Use our mining profitability calculator to estimate BTC and crypto mining earnings, electricity expenses, and net profits. Try now!" />
+      <meta name="twitter:image" content="https://oracledevelopmentgroup.com/assets/images/mining-calculator.jpg" />
+
+      {/* Canonical URL */}
+      <link rel="canonical" href={pageUrl} />
+
+      {/* Favicon */}
+      <link rel="icon" href="/favicon.ico" />
+
+      {/* Structured Data (Schema Markup for SEO) */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org/",
+          "@type": "WebPage",
+          "name": "Crypto Mining Profitability Calculator",
+          "url": pageUrl,
+          "description": "Calculate your crypto mining profitability with our advanced mining profitability calculator. Estimate BTC earnings, electricity costs, and net profits instantly.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Oracle Development Group",
+            "url": "https://oracledevelopmentgroup.com",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://oracledevelopmentgroup.com/assets/images/logo.png"
+            }
+          },
+          "mainEntity": {
+            "@type": "SoftwareApplication",
+            "name": "Crypto Mining Profitability Calculator",
+            "applicationCategory": "FinancialApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0.00",
+              "priceCurrency": "USD"
+            }
+          }
+        })}
+      </script>
+    </Head>
     <div className = "container mt-100 mb-100 pb-80"> <h2>Use our mining profitability Calculator</h2>
     <div className="calculator-container">
       

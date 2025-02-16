@@ -19,16 +19,7 @@ export default async function handler(req, res) {
           quantity: item.quantity,
         }));
   
-        lineItems.push({
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "Shipping Fee",
-            },
-            unit_amount: 5000,
-          },
-          quantity: 1,
-        });
+       
   
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ["card", "us_bank_account"],

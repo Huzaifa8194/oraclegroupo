@@ -13,6 +13,7 @@
     "@stripe/stripe-js": "^5.5.0",
     "@swc/helpers": "^0.5.15",
     "axios": "^1.7.9",
+    "emailjs-com": "^3.2.0",
     "firebase": "^11.2.0",
     "install": "^0.13.0",
     "isotope-layout": "^3.0.6",

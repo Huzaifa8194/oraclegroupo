@@ -6,51 +6,157 @@ import ProgressBar from "../src/components/ProgressBar";
 import Layout from "../src/layouts/Layout";
 import { logoSlider, testimonialSliderOne } from "../src/sliderProps";
 import TestimonialSlider from "../src/components/sliders/TestimonialSlider";
+import Head from "next/head";
 const About = () => {
   return (
     <Layout header={4}>
+      <Head>
+        {/* Primary Meta Tags */}
+        <title>
+          About Us - Oracle Development Group | Crypto & Real Estate Experts
+        </title>
+        <meta
+          name="description"
+          content="Learn about Oracle Development Group, a team of industry leaders specializing in cryptocurrency mining, real estate, and power solutions. Our experts bring innovation and expertise to the global market."
+        />
+        <meta
+          name="keywords"
+          content="Oracle Development, crypto mining, real estate, power systems, blockchain investment, team expertise"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Oracle Development Group" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://oracledevelopmentgroup.com/about"
+        />
+        <meta
+          property="og:title"
+          content="About Us - Oracle Development Group | Crypto & Real Estate Experts"
+        />
+        <meta
+          property="og:description"
+          content="Meet the Oracle Development Group, a team of experts specializing in cryptocurrency mining, real estate, and energy efficiency solutions."
+        />
+        <meta
+          property="og:image"
+          content="https://oracledevelopmentgroup.com/assets/images/about/about-cover.jpg"
+        />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:url"
+          content="https://oracledevelopmentgroup.com/about"
+        />
+        <meta
+          name="twitter:title"
+          content="About Us - Oracle Development Group | Crypto & Real Estate Experts"
+        />
+        <meta
+          name="twitter:description"
+          content="Meet the team behind Oracle Development Group, pioneers in blockchain, real estate, and power solutions."
+        />
+        <meta
+          name="twitter:image"
+          content="https://oracledevelopmentgroup.com/assets/images/about/about-cover.jpg"
+        />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://oracledevelopmentgroup.com/about" />
+
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
+
+        {/* Structured Data (Schema Markup for SEO) */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Oracle Development Group",
+            url: "https://oracledevelopmentgroup.com",
+            logo: "https://oracledevelopmentgroup.com/assets/images/logo.png",
+            description:
+              "Oracle Development Group specializes in cryptocurrency mining, real estate investments, and energy efficiency solutions.",
+            foundingDate: "2015",
+            founders: [
+              {
+                "@type": "Person",
+                name: "Lorne Harari",
+              },
+              {
+                "@type": "Person",
+                name: "Saul Stricker",
+              },
+              {
+                "@type": "Person",
+                name: "Christopher Bregman",
+              },
+              {
+                "@type": "Person",
+                name: "Paul Orsenigo",
+              },
+            ],
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+1-555-123-4567",
+              contactType: "customer service",
+              areaServed: "Global",
+              availableLanguage: ["English"],
+            },
+            sameAs: [
+              "https://facebook.com/oracledevelopment",
+              "https://twitter.com/oracledev",
+              "https://linkedin.com/company/oracledevelopment",
+            ],
+          })}
+        </script>
+      </Head>
       <PageBanner pageName={"Who We Are"} />
       <section className="about-section p-r z-1 pt-170 pb-80">
-  <div className="container">
-    <div className="row">
-      <div className="col-lg-6">
-        <div className="about-content-box content-box-gap mb-50">
-          <div className="section-title section-title-left wow fadeInUp mb-30">
-            {/* <span className="sub-title">About Us</span> */}
-            <h2>Who We Are</h2>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-6">
+              <div className="about-content-box content-box-gap mb-50">
+                <div className="section-title section-title-left wow fadeInUp mb-30">
+                  {/* <span className="sub-title">About Us</span> */}
+                  <h2>Who We Are</h2>
+                </div>
+                <p style={{ fontSize: "1.7em", textAlign: "justify" }}>
+                  Oracle Group was established by a close-knit group of friends
+                  from the United States and Canada, united by family ties and a
+                  strong track record in business. Our team brings expertise in
+                  real estate development, the film industry, and advanced power
+                  systems, with technical leadership from Saul Stricker. We also
+                  provide global investment opportunities in the cryptocurrency
+                  sector, leveraging our diverse skill set and shared vision.
+                </p>
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div
+                className="about-four_image-box text-right p-r mb-50 wow fadeInRight"
+                style={{ marginTop: "20px" }} // Added spacing above the image box
+              >
+                <img
+                  src="assets/images/logo/dd.png"
+                  className="about-img_one"
+                  alt=""
+                  style={{
+                    borderRadius: "40px",
+                    marginBottom: "20px", // Added spacing below the image
+                    maxWidth: "100%",
+                    height: "auto",
+                  }}
+                />
+              </div>
+            </div>
           </div>
-          <p style={{ fontSize: "1.7em", textAlign: "justify" }}>
-            Oracle Group was established by a close-knit group of friends from
-            the United States and Canada, united by family ties and a strong
-            track record in business. Our team brings expertise in real estate
-            development, the film industry, and advanced power systems, with
-            technical leadership from Saul Stricker. We also provide global
-            investment opportunities in the cryptocurrency sector, leveraging
-            our diverse skill set and shared vision.
-          </p>
         </div>
-      </div>
-      <div className="col-lg-6">
-        <div
-          className="about-four_image-box text-right p-r mb-50 wow fadeInRight"
-          style={{ marginTop: "20px" }} // Added spacing above the image box
-        >
-          <img
-            src="assets/images/logo/dd.png"
-            className="about-img_one"
-            alt=""
-            style={{
-              borderRadius: "40px",
-              marginBottom: "20px", // Added spacing below the image
-              maxWidth: "100%",
-              height: "auto",
-            }}
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/*====== End About Section ======*/}
       {/*====== Start Why choose Section ======*/}
@@ -175,130 +281,135 @@ const About = () => {
       {/*====== End Partners Section ======*/}
       {/*====== Start Farmers Section ======*/}
       <section className="farmers-team_two light-gray-bg pb-90">
-  <div className="container">
-    <div className="row align-items-end">
-      <div className="col-lg-8">
-        <div className="section-title section-title-left mb-50 wow fadeInLeft">
-          <span className="sub-title" style={{ color: "white" }}>
-            Our Team
-          </span>
-          <h2 style={{ color: "white" }}>
-            Meet Our Experienced Team Members
-          </h2>
+        <div className="container">
+          <div className="row align-items-end">
+            <div className="col-lg-8">
+              <div className="section-title section-title-left mb-50 wow fadeInLeft">
+                <span className="sub-title" style={{ color: "white" }}>
+                  Our Team
+                </span>
+                <h2 style={{ color: "white" }}>
+                  Meet Our Experienced Team Members
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div className="row justify-content-center">
+            {[
+              {
+                imgSrc: "assets/images/team/team2.jpg",
+                name: "Lorne Harari",
+                position: "Founding partner",
+                id: "lorne",
+              },
+              {
+                imgSrc: "assets/images/team/team1.jpeg",
+                name: "Saul Stricker",
+                position: "Global Energy Efficiency Strategist",
+                id: "saul",
+              },
+              {
+                imgSrc: "assets/images/team/team3.jpeg",
+                name: "Christopher Bregman",
+                position: "Partner",
+                id: "christopher",
+              },
+              {
+                imgSrc: "assets/images/team/team4.jpeg",
+                name: "Paul Orsenigo",
+                position: "Strategic Consultant",
+                id: "paul",
+              },
+            ].map((member, index) => (
+              <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12" key={index}>
+                <div
+                  className="team-member_one text-center mb-40 wow fadeInUp"
+                  href={member.id}
+                >
+                  <div className="member-img" style={{ overflow: "hidden" }}>
+                    <Link href={`#${member.id}`}>
+                      <img
+                        src={member.imgSrc}
+                        alt=""
+                        style={{
+                          height: "250px",
+                          width: "auto",
+                          objectFit: "fill",
+                          borderRadius: "20px",
+                        }}
+                      />
+                    </Link>
+                  </div>
+                  <Link href={`#${member.id}`}>
+                    <div
+                      className="member-info"
+                      style={{
+                        minHeight: "180px", // Set a fixed height for consistency
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <h3 className="title">
+                        <Link href={`#${member.id}`}>
+                          <a style={{ color: "white" }}>{member.name}</a>
+                        </Link>
+                      </h3>
+                      <p className="position">{member.position}</p>
+                      <ul className="social-link">
+                        <li>
+                          <a href="#">
+                            <i className="fab fa-facebook-f" />
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i className="fab fa-twitter" />
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i className="fab fa-linkedin" />
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i className="fab fa-youtube" />
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
-    <div className="row justify-content-center">
-  {[
-    {
-      imgSrc: "assets/images/team/team2.jpg",
-      name: "Lorne Harari",
-      position: "Founding partner",
-      id: "lorne",
-    },
-    {
-      imgSrc: "assets/images/team/team1.jpeg",
-      name: "Saul Stricker",
-      position: "Global Energy Efficiency Strategist",
-      id: "saul",
-    },
-    {
-      imgSrc: "assets/images/team/team3.jpeg",
-      name: "Christopher Bregman",
-      position: "Partner",
-      id: "christopher",
-    },
-    {
-      imgSrc: "assets/images/team/team4.jpeg",
-      name: "Paul Orsenigo",
-      position: "Strategic Consultant",
-      id: "paul",
-    },
-  ].map((member, index) => (
-    <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12" key={index}>
-      <div className="team-member_one text-center mb-40 wow fadeInUp" href = {member.id}>
-        <div className="member-img" style={{ overflow: "hidden" }}>
-        <Link  href={`#${member.id}`}>
-          <img
-            src={member.imgSrc}
-            alt=""
-            style={{
-              height: "250px",
-              width: "250px",
-              objectFit: "cover",
-              borderRadius: "20px",
-            }}
-          />
-          </Link>
-        </div>
-        <Link  href={`#${member.id}`}>
-        <div
-          className="member-info"
-          style={{
-            minHeight: "180px", // Set a fixed height for consistency
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <h3 className="title">
-            <Link href={`#${member.id}`}>
-              <a style={{ color: "white" }}>{member.name}</a>
-            </Link>
-          </h3>
-          <p className="position">{member.position}</p>
-          <ul className="social-link">
-            <li>
-              <a href="#">
-                <i className="fab fa-facebook-f" />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <i className="fab fa-twitter" />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <i className="fab fa-linkedin" />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <i className="fab fa-youtube" />
-              </a>
-            </li>
-          </ul>
-        </div>
-        </Link>
-      </div>
-    </div>
-  ))}
-</div>
-
-  </div>
-</section>
-
+      </section>
 
       {/*====== End Farmers Section ======*/}
 
-      <section className="blog-details-page pt-50 pb-50" id = 'lorne' >
+      <section className="blog-details-page pt-50 pb-50" id="lorne">
         <div className="container">
-       <div className="row">
-
-
-          <div className="col-xl-4 col-lg-5">
+          <div className="row">
+            <div className="col-xl-4 col-lg-5">
               <div className="sidebar-widget-area">
-                <div className="widget author-widget mb-40 wow fadeInUp" style={{color: 'black'}}>
+                <div
+                  className="widget author-widget mb-40 wow fadeInUp"
+                  style={{ color: "black" }}
+                >
                   <div className="author-content">
-                    <img src="assets/images/team/team2.jpg" alt="User Image" 
-                    style={{
-                  height: "250px",
-                  width: "250px",
-                  objectFit: "contain",
-                  borderRadius: "10%",
-                }} />
+                    <img
+                      src="assets/images/team/team2.jpg"
+                      alt="User Image"
+                      style={{
+                        height: "250px",
+                        width: "250px",
+                        objectFit: "contain",
+                        borderRadius: "10%",
+                      }}
+                    />
                     <h4>Lorne Harari</h4>
                     <p>Founding partner</p>
                     <ul className="social-link">
@@ -327,17 +438,17 @@ const About = () => {
                 </div>
               </div>
             </div>
-            <div className="col-xl-8 col-lg-7" >
-              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{backgroundColor: 'white'}}>
+            <div className="col-xl-8 col-lg-7">
+              <div
+                className="blog-details-wrapper mb-40 wow fadeInUp"
+                style={{ backgroundColor: "white" }}
+              >
                 <div className="blog-post-item">
-                  
                   <div className="post-content">
-                   
                     <p style={{ fontSize: "1.3em", color: "black" }}>
-
                       <strong>From Local Lawns to Global Ventures</strong>
-                      <br/><br/>
-                      
+                      <br />
+                      <br />
                       Lorne’s entrepreneurial journey began with simple yet
                       foundational tasks like delivering newspapers and bagging
                       groceries, where he developed a strong work ethic and
@@ -386,33 +497,30 @@ const About = () => {
                 </div>
               </div>
             </div>
-
-
-            </div>
+          </div>
         </div>
       </section>
 
-
-
-
-
-      <section className="blog-details-page pt-50 pb-50" id = 'paul' style={{backgroundColor: '#1F1E17'}}>
+      <section
+        className="blog-details-page pt-50 pb-50"
+        id="paul"
+        style={{ backgroundColor: "#1F1E17" }}
+      >
         <div className="container">
-       <div className="row">
-
-
-
+          <div className="row">
             <div className="col-xl-4 col-lg-5">
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team4.jpeg" alt="User Image" 
-                     style={{
-                      height: "250px",
-                      width: "250px",
-                      objectFit: "contain",
-                      borderRadius: "10%",
-                    }}
+                    <img
+                      src="assets/images/team/team4.jpeg"
+                      alt="User Image"
+                      style={{
+                        height: "250px",
+                        width: "250px",
+                        objectFit: "contain",
+                        borderRadius: "10%",
+                      }}
                     />
                     <h4>Paul Orsenigo</h4>
                     <p>Strategic Consultant</p>
@@ -443,12 +551,13 @@ const About = () => {
               </div>
             </div>
 
-
             <div className="col-xl-8 col-lg-7">
-              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{background:'white'}}>
+              <div
+                className="blog-details-wrapper mb-40 wow fadeInUp"
+                style={{ background: "white" }}
+              >
                 <div className="blog-post-item">
                   <div className="post-content">
-                   
                     <p style={{ fontSize: "1.3em", color: "black" }}>
                       Paul Orsenigo is a seasoned entrepreneur and real estate
                       professional with a strong passion for Bitcoin, crypto,
@@ -487,34 +596,27 @@ const About = () => {
                 </div>
               </div>
             </div>
-
-         
-
-            </div>
+          </div>
         </div>
       </section>
 
-
-
-
-
-      <section className="blog-details-page pt-50 pb-50" id = "saul">
+      <section className="blog-details-page pt-50 pb-50" id="saul">
         <div className="container">
-       <div className="row">
-
-
+          <div className="row">
             <div className="col-xl-4 col-lg-5">
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team1.jpeg" alt="User Image"
-                    
-                    style={{
-                      height: "250px",
-                      width: "200px",
-                      objectFit: "cover",
-                      borderRadius: "2%",
-                    }}/>
+                    <img
+                      src="assets/images/team/team1.jpeg"
+                      alt="User Image"
+                      style={{
+                        height: "250px",
+                        width: "200px",
+                        objectFit: "cover",
+                        borderRadius: "2%",
+                      }}
+                    />
                     <h4>Saul Stricker</h4>
                     <p> Global Energy Efficiency Strategist</p>
                     <ul className="social-link">
@@ -544,111 +646,103 @@ const About = () => {
               </div>
             </div>
 
-
-
             <div className="col-xl-8 col-lg-7">
               <div className="blog-details-wrapper mb-40 wow fadeInUp">
                 <div className="blog-post-item">
                   <div className="post-content">
-                   
                     <p style={{ fontSize: "1.3em", color: "black" }}>
-                    With over 60 years of experience in energy efficiency, power
-                reliability, and technical consulting across 12 countries, Saul
-                Stricker is a trailblazer in developing innovative solutions for
-                energy optimization and infrastructure challenges.
-                <br />
-                <br />
-                <strong>Career Highlights</strong>
-                <br />
-                Pioneering Interruptible Power Solutions: <br></br>While working
-                with Ontario Hydro (now Hydro One) in Canada, Saul played a key
-                role in designing a groundbreaking program for “interruptible
-                power.” This initiative allowed the utility to optimize energy
-                usage during off-peak periods by leveraging surplus
-                hydroelectric power from Niagara Falls, enabling system
-                expansion and reducing costs.
-                <br />
-                <br /> Global Impact in Energy Consulting:
-                <br />
-                Saul’s expertise has been sought worldwide. For instance, he was
-                invited by the National Electric Utility of Egypt to address
-                widespread blackouts impacting seven interconnected countries.
-                His strategy to shift major loads to off-peak hours using
-                interruptible power not only restored grid stability but also
-                significantly lowered costs for both utilities and large-scale
-                consumers.
-                <br />
-                <br />
-                Policy Innovation for Energy Efficiency:
-                <br /> Saul’s work in developing programs such as Canada’s
-                ENERGUIDE Labeling Program has improved product efficiency and
-                supported local manufacturing competitiveness. His ability to
-                align energy strategies with economic growth makes his expertise
-                particularly valuable in emerging markets, such as Paraguay,
-                where his solutions could elevate manufacturing standards and
-                reduce operational expenses.
-                <br />
-                <br />
-                <strong>Commitment to Service</strong>
-                <br />
-                <br />
-                Beyond his professional achievements, Saul is deeply committed
-                to giving back to communities and making a positive impact on
-                humanity. His passion for innovative energy solutions is matched
-                by his dedication to creating sustainable and equitable outcomes
-                for people and businesses alike.
-                <br />
-                <br />
-                Saul Stricker’s legacy is one of leadership, vision, and a
-                relentless drive to advance energy efficiency on a global scale.
+                      With over 60 years of experience in energy efficiency,
+                      power reliability, and technical consulting across 12
+                      countries, Saul Stricker is a trailblazer in developing
+                      innovative solutions for energy optimization and
+                      infrastructure challenges.
+                      <br />
+                      <br />
+                      <strong>Career Highlights</strong>
+                      <br />
+                      Pioneering Interruptible Power Solutions: <br></br>While
+                      working with Ontario Hydro (now Hydro One) in Canada, Saul
+                      played a key role in designing a groundbreaking program
+                      for “interruptible power.” This initiative allowed the
+                      utility to optimize energy usage during off-peak periods
+                      by leveraging surplus hydroelectric power from Niagara
+                      Falls, enabling system expansion and reducing costs.
+                      <br />
+                      <br /> Global Impact in Energy Consulting:
+                      <br />
+                      Saul’s expertise has been sought worldwide. For instance,
+                      he was invited by the National Electric Utility of Egypt
+                      to address widespread blackouts impacting seven
+                      interconnected countries. His strategy to shift major
+                      loads to off-peak hours using interruptible power not only
+                      restored grid stability but also significantly lowered
+                      costs for both utilities and large-scale consumers.
+                      <br />
+                      <br />
+                      Policy Innovation for Energy Efficiency:
+                      <br /> Saul’s work in developing programs such as Canada’s
+                      ENERGUIDE Labeling Program has improved product efficiency
+                      and supported local manufacturing competitiveness. His
+                      ability to align energy strategies with economic growth
+                      makes his expertise particularly valuable in emerging
+                      markets, such as Paraguay, where his solutions could
+                      elevate manufacturing standards and reduce operational
+                      expenses.
+                      <br />
+                      <br />
+                      <strong>Commitment to Service</strong>
+                      <br />
+                      <br />
+                      Beyond his professional achievements, Saul is deeply
+                      committed to giving back to communities and making a
+                      positive impact on humanity. His passion for innovative
+                      energy solutions is matched by his dedication to creating
+                      sustainable and equitable outcomes for people and
+                      businesses alike.
+                      <br />
+                      <br />
+                      Saul Stricker’s legacy is one of leadership, vision, and a
+                      relentless drive to advance energy efficiency on a global
+                      scale.
                     </p>
                     <div className="author-title-qoute d-flex">
                       <div className="author-title">
                         <h4>Saul Stricker</h4>
-                        <p className="position"> Global Energy Efficiency Strategist</p>
+                        <p className="position">
+                          {" "}
+                          Global Energy Efficiency Strategist
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-          
-
-
-
-            </div>
+          </div>
         </div>
       </section>
 
-
-
-
-
-
-
-
-
-
-
-
-      <section className="blog-details-page pt-50 pb-50 " id  = 'christopher' style={{backgroundColor: '#1F1E17', marginBottom: '0.5px'}}>
+      <section
+        className="blog-details-page pt-50 pb-50 "
+        id="christopher"
+        style={{ backgroundColor: "#1F1E17", marginBottom: "0.5px" }}
+      >
         <div className="container">
-       <div className="row">
-
-
-
+          <div className="row">
             <div className="col-xl-4 col-lg-5">
               <div className="sidebar-widget-area">
                 <div className="widget author-widget mb-40 wow fadeInUp">
                   <div className="author-content">
-                    <img src="assets/images/team/team3.jpeg" alt="User Image" 
-                     style={{
-                      height: "250px",
-                      width: "250px",
-                      objectFit: "contain",
-                      borderRadius: "10%",
-                    }}/>
+                    <img
+                      src="assets/images/team/team3.jpeg"
+                      alt="User Image"
+                      style={{
+                        height: "250px",
+                        width: "250px",
+                        objectFit: "contain",
+                        borderRadius: "10%",
+                      }}
+                    />
                     <h4>Christopher Bregman</h4>
                     <p>Partner</p>
                     <ul className="social-link">
@@ -678,43 +772,44 @@ const About = () => {
               </div>
             </div>
 
-
-
-
             <div className="col-xl-8 col-lg-7">
-              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{background: 'white'}}>
+              <div
+                className="blog-details-wrapper mb-40 wow fadeInUp"
+                style={{ background: "white" }}
+              >
                 <div className="blog-post-item">
                   <div className="post-content">
-                   
                     <p style={{ fontSize: "1.3em", color: "black" }}>
-                    Christopher Bregman is a multifaceted professional with a
-                diverse background in acting, directing, and real estate. Born
-                and raised in New York City, Christopher has always been drawn
-                to the world of entertainment and business.
-                <br />
-                <br />
-                As the son of legendary film producer Martin Bregman, who
-                brought iconic films like Scarface to the big screen,
-                Christopher grew up surrounded by the excitement and creativity
-                of the film industry. He has carried on his family's legacy
-                through his own work in acting and directing.
-                <br />
-                <br />
-                In addition to his work in entertainment, Christopher has also
-                established himself as a successful real estate professional in
-                New York City. His unique blend of creative vision and business
-                acumen has allowed him to thrive in both industries.
-                <br />
-                <br />
-                Currently, Christopher is investing in a cutting-edge Bitcoin
-                mining facility, further expanding his portfolio and exploring
-                new opportunities in the rapidly evolving world of
-                cryptocurrency.
-                <br />
-                <br />
-                With his diverse experience, industry connections, and passion
-                for innovation, Christopher brings a unique perspective and
-                expertise to the table.
+                      Christopher Bregman is a multifaceted professional with a
+                      diverse background in acting, directing, and real estate.
+                      Born and raised in New York City, Christopher has always
+                      been drawn to the world of entertainment and business.
+                      <br />
+                      <br />
+                      As the son of legendary film producer Martin Bregman, who
+                      brought iconic films like Scarface to the big screen,
+                      Christopher grew up surrounded by the excitement and
+                      creativity of the film industry. He has carried on his
+                      family's legacy through his own work in acting and
+                      directing.
+                      <br />
+                      <br />
+                      In addition to his work in entertainment, Christopher has
+                      also established himself as a successful real estate
+                      professional in New York City. His unique blend of
+                      creative vision and business acumen has allowed him to
+                      thrive in both industries.
+                      <br />
+                      <br />
+                      Currently, Christopher is investing in a cutting-edge
+                      Bitcoin mining facility, further expanding his portfolio
+                      and exploring new opportunities in the rapidly evolving
+                      world of cryptocurrency.
+                      <br />
+                      <br />
+                      With his diverse experience, industry connections, and
+                      passion for innovation, Christopher brings a unique
+                      perspective and expertise to the table.
                     </p>
                     <div className="author-title-qoute d-flex">
                       <div className="author-title">
@@ -726,30 +821,9 @@ const About = () => {
                 </div>
               </div>
             </div>
-
-        
-
-            </div>
+          </div>
         </div>
       </section>
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
 
       {/* <section className="testimonial-three pt-130 pb-0">
         <div className="container">

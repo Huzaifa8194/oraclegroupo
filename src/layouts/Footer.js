@@ -1,251 +1,186 @@
+import { useState } from "react";
 import Link from "next/link";
+import { db } from "../firebaseConfig"; // Ensure Firebase is configured
+import { collection, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
+import emailjs from "emailjs-com";
+
 const Footer = ({ footer }) => {
   switch (footer) {
-    case 3:
-      return <Footer3 />;
-    case 4:
-      return <Footer4 />;
     default:
       return <DefaultFooter />;
   }
 };
+
 export default Footer;
 
-const DefaultFooter = () => (
-  <footer className="footer-default footer-white dark-black-bg">
-    <div className="container">
-      <div className="footer-top wow fadeInUp">
-        <div className="row">
-          <div className="col-lg-4 col-md-12 footer-contact-item">
-            <div className="contact-info d-flex justify-content-center">
-              <div className="site-logo text-center">
-                <Link href="/">
-                  <a className="brand-logo" style={{width: '150px'}}>
-                    <img
-                      src="/assets/images/logo/oraclelogo.png"
-                      alt="Footer Logo"
-                    />
-                  </a>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-12 footer-contact-item">
-            <div className="contact-info d-flex">
-              <div className="icon" style={{backgroundColor: 'white', color: '#1F1E17'}}>
-                <i className="flaticon-placeholder" />
-              </div>
-              <div className="text">
-                <h5>Locations</h5>
-                <h6>55 Main Street, New York</h6>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-12 footer-contact-item">
-            <div className="contact-info d-flex">
-            <div className="icon" style={{backgroundColor: 'white', color: '#1F1E17'}}>
-                <i className="flaticon-placeholder" />
-              </div>
-              <div className="text">
-                <h5>Email Us</h5>
-                <h6>
-                  <a href="mailto:hotlineinfo@gmial.com">
-                    hotlineinfo@gmial.com
-                  </a>
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="footer-widget pt-70 pb-25">
-        <FooterMenu />
-      </div>
-      <div className="footer-newsletter footer-newsletter-one text-white wow fadeInUp">
-        <div className="row">
-          <div className="col-xl-3">
-            <div className="footer-text">
-              <h5>Subscrive Our Newsletter To Get More Updates</h5>
-            </div>
-          </div>
-          <div className="col-xl-9">
-            <div className="newsletter-form">
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="row">
-                  <div className="col-lg-5">
-                    <div className="form_group">
-                      <input
-                        type="email"
-                        className="form_control"
-                        placeholder="Email Address"
-                        name="email"
-                        required=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div className="form_group">
-                      <input
-                        type="text"
-                        className="form_control"
-                        placeholder="Phone"
-                        name="phone"
-                        required=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-3">
-                    <div className="form_group">
-                      <button className="main-btn btn-yellow">
-                        Subscribe Now
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="footer-copyright">
-        <div className="col-lg-12">
-          <div className="copyright-text text-center">
-            <p>© 2025 Oracle. All Rights Reserved</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-);
+const DefaultFooter = () => {
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
 
-const Footer3 = () => (
-  <footer
-    className="footer-bg bg_cover p-r z-1 footer-white"
-    style={{ backgroundImage: "url(assets/images/bg/footer-bg-1.jpg)" }}
-  >
-    <div className="container">
-      <div className="footer-newsletter footer-newsletter-two yellow-bg">
-        <div className="row">
-          <div className="col-xl-3">
-            <div className="footer-text">
-              <h5>Subscrive Our Newsletter To Get More Updates</h5>
-            </div>
-          </div>
-          <div className="col-xl-9">
-            <div className="newsletter-form">
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="row">
-                  <div className="col-lg-5">
-                    <div className="form_group">
-                      <input
-                        type="email"
-                        className="form_control"
-                        placeholder="Email Address"
-                        name="email"
-                        required=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div className="form_group">
-                      <input
-                        type="text"
-                        className="form_control"
-                        placeholder="Phone"
-                        name="phone"
-                        required=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-3">
-                    <div className="form_group">
-                      <button className="main-btn bordered-btn">
-                        Subscribe Now
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="footer-widget pb-25">
-        <FooterMenu />
-      </div>
-      <div className="footer-copyright border-top-white-1">
-        <div className="col-lg-12">
-          <div className="copyright-text text-center">
-            <p>© 2022 Orgrarium. All Rights Reserved</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-);
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
 
-const Footer4 = () => (
-  <footer className="footer-default footer-white dark-black-bg">
-    <div className="container">
-      <div className="footer-newsletter footer-newsletter-two yellow-bg">
-        <div className="row">
-          <div className="col-xl-3">
-            <div className="footer-text">
-              <h5>Subscrive Our Newsletter To Get More Updates</h5>
-            </div>
-          </div>
-          <div className="col-xl-9">
-            <div className="newsletter-form">
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="row">
-                  <div className="col-lg-5">
-                    <div className="form_group">
-                      <input
-                        type="email"
-                        className="form_control"
-                        placeholder="Email Address"
-                        name="email"
-                        required=""
+    if (!email || !phone) {
+      toast.error("Please enter both email and phone.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Save the subscriber data to Firestore
+      await addDoc(collection(db, "subscribers"), {
+        email,
+        phone,
+        subscribedAt: new Date(),
+      });
+
+      // Prepare parameters for EmailJS to send a confirmation email
+      const templateParams = {
+        email: email,
+        phone: phone,
+        subject: "Newsletter Subscription Confirmation",
+        message: "Thank you for subscribing to our newsletter!",
+      };
+
+      // Send the email using EmailJS (free service)
+      await emailjs.send(
+        "service_x4452hp",      // Replace with your EmailJS service ID
+        "template_av9xumx",     // Replace with your EmailJS template ID
+        templateParams,
+        "FKxzQ74ZqkhfWk__Z"          // Replace with your EmailJS public key/user ID
+      );
+
+      toast.success("Subscribed successfully! A confirmation email has been sent.");
+      setEmail("");
+      setPhone("");
+    } catch (error) {
+      console.error("Error subscribing:", error);
+      toast.error("Subscription failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <footer className="footer-default footer-white dark-black-bg">
+      <div className="container">
+        <div className="footer-top wow fadeInUp">
+          <div className="row">
+            <div className="col-lg-4 col-md-12 footer-contact-item">
+              <div className="contact-info d-flex justify-content-center">
+                <div className="site-logo text-center">
+                  <Link href="/">
+                    <a className="brand-logo" style={{ width: "150px" }}>
+                      <img
+                        src="/assets/images/logo/oraclelogo.png"
+                        alt="Footer Logo"
                       />
-                    </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div className="form_group">
-                      <input
-                        type="text"
-                        className="form_control"
-                        placeholder="Phone"
-                        name="phone"
-                        required=""
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-3">
-                    <div className="form_group">
-                      <button className="main-btn bordered-btn">
-                        Subscribe Now
-                      </button>
-                    </div>
-                  </div>
+                    </a>
+                  </Link>
                 </div>
-              </form>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-12 footer-contact-item">
+              <div className="contact-info d-flex">
+                <div
+                  className="icon"
+                  style={{ backgroundColor: "white", color: "#1F1E17" }}
+                >
+                  <i className="flaticon-placeholder" />
+                </div>
+                <div className="text">
+                  <h5>Locations</h5>
+                  <h6>55 Main Street, New York</h6>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-12 footer-contact-item">
+              <div className="contact-info d-flex">
+                <div
+                  className="icon"
+                  style={{ backgroundColor: "white", color: "#1F1E17" }}
+                >
+                  <i className="flaticon-placeholder" />
+                </div>
+                <div className="text">
+                  <h5>Email Us</h5>
+                  <h6>
+                    <a href="mailto:hotlineinfo@gmial.com">
+                      hotlineinfo@gmial.com
+                    </a>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="footer-widget pt-70 pb-25">
+          <FooterMenu />
+        </div>
+        <div className="footer-newsletter footer-newsletter-one text-white wow fadeInUp">
+          <div className="row">
+            <div className="col-xl-3">
+              <div className="footer-text">
+                <h5>Subscrive Our Newsletter To Get More Updates</h5>
+              </div>
+            </div>
+            <div className="col-xl-9">
+              <div className="newsletter-form">
+                <form onSubmit={handleSubscribe}>
+                  <div className="row">
+                    <div className="col-lg-5">
+                      <div className="form_group">
+                        <input
+                          type="email"
+                          className="form_control"
+                          placeholder="Email Address"
+                          name="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required=""
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-4">
+                      <div className="form_group">
+                        <input
+                          type="text"
+                          className="form_control"
+                          placeholder="Phone"
+                          name="phone"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          required=""
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-3">
+                      <div className="form_group">
+                        <button className="main-btn btn-yellow" type="submit" disabled={loading}>
+                          {loading ? "Subscribing..." : "Subscribe Now"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="footer-copyright">
+          <div className="col-lg-12">
+            <div className="copyright-text text-center">
+              <p>© 2025 Oracle. All Rights Reserved</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="footer-widget pb-25">
-        <FooterMenu />
-      </div>
-      <div className="footer-copyright border-top-white-1">
-        <div className="col-lg-12">
-          <div className="copyright-text text-center">
-            <p>© 2022 Orgrarium. All Rights Reserved</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 const FooterMenu = () => (
   <div className="row">
@@ -254,8 +189,10 @@ const FooterMenu = () => (
         <h4 className="widget-title">About Us</h4>
         <div className="footer-about-content">
           <p>
-          Oracle Group, founded by a U.S.-Canadian team with strong business ties, specializes in real estate, film, advanced power systems, and global cryptocurrency investments, led by Saul Stricker. 
-           </p>
+            Oracle Group, founded by a U.S.-Canadian team with strong business
+            ties, specializes in real estate, film, advanced power systems, and
+            global cryptocurrency investments, led by Saul Stricker.
+          </p>
           <div className="social-box">
             <h4 className="mb-15">Follow On</h4>
             <ul className="social-link">
@@ -307,16 +244,14 @@ const FooterMenu = () => (
             <li>
               <a href="/checkout">Checkout</a>
             </li>
-          
           </ul>
           <ul>
-          <li>
+            <li>
               <a href="/calculator">Calculator</a>
             </li>
             <li>
               <a href="/contact">Contact Us</a>
             </li>
-          
           </ul>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { auth } from "../src/firebaseConfig"; // Your Firebase configuration fil
 import Layout from "../src/layouts/Layout";
 import PageBanner from "../src/components/PageBanner";
 import { toast } from "react-toastify";
+import Head from "next/head";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -33,6 +34,63 @@ const Login = () => {
 
   return (
     <Layout header={4}>
+      <Head>
+  {/* Primary Meta Tags */}
+  <title>Login - Access Your Account | Oracle Development</title>
+  <meta name="description" content="Securely log in to your Oracle Development account to manage your mining equipment, hosting services, and investments." />
+  <meta name="keywords" content="login, user login, mining dashboard, account access, Oracle Development login" />
+  <meta name="author" content="Oracle Development" />
+  <meta name="robots" content="index, follow" />
+
+  {/* Open Graph / Facebook */}
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.yourdomain.com/login" />
+  <meta property="og:title" content="Login - Access Your Account | Oracle Development" />
+  <meta property="og:description" content="Securely log in to your Oracle Development account to manage your mining equipment, hosting services, and investments." />
+  <meta property="og:image" content="https://www.yourdomain.com/assets/images/logo/dd.png" />
+
+  {/* Twitter */}
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://www.yourdomain.com/login" />
+  <meta property="twitter:title" content="Login - Access Your Account | Oracle Development" />
+  <meta property="twitter:description" content="Securely log in to your Oracle Development account to manage your mining equipment, hosting services, and investments." />
+  <meta property="twitter:image" content="https://www.yourdomain.com/assets/images/logo/dd.png" />
+
+  {/* Canonical URL */}
+  <link rel="canonical" href="https://www.yourdomain.com/login" />
+
+  {/* Favicon */}
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  {/* Structured Data for SEO (JSON-LD Schema) */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Login - Oracle Development",
+      "url": "https://www.yourdomain.com/login",
+      "description": "Securely log in to your Oracle Development account to manage your mining equipment, hosting services, and investments.",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.yourdomain.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Login",
+            "item": "https://www.yourdomain.com/login"
+          }
+        ]
+      }
+    })}
+  </script>
+</Head>
+
       <PageBanner pageName="Login" />
 
       <section className="login-section pt-100 pb-100">

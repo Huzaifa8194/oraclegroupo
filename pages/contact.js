@@ -9,6 +9,8 @@ import { logoSlider } from "../src/sliderProps";
 
 import { toast } from "react-toastify";
 
+import Head from "next/head";
+
 const auth = getAuth();
 const db = getFirestore();
 
@@ -22,13 +24,13 @@ const Contact = () => {
   const [error, setError] = useState("");
 
   // Check if the user is authenticated
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push("/login"); // Redirect to login if not logged in
-      }
-    });
-  }, [router]);
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (!user) {
+  //       router.push("/login"); // Redirect to login if not logged in
+  //     }
+  //   });
+  // }, [router]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -67,6 +69,54 @@ const Contact = () => {
 
   return (
     <Layout header={4}>
+      <Head>
+  {/* Primary Meta Tags */}
+  <title>Contact Us - Get in Touch | Oracle Development</title>
+  <meta name="description" content="Have any inquiries? Contact Oracle Development for mining solutions, hosting services, and expert support." />
+  <meta name="keywords" content="contact Oracle Development, crypto mining support, hosting inquiries, mining consultation, get in touch" />
+  <meta name="author" content="Oracle Development" />
+  <meta name="robots" content="index, follow" />
+
+  {/* Open Graph / Facebook */}
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.yourdomain.com/contact" />
+  <meta property="og:title" content="Contact Us - Get in Touch | Oracle Development" />
+  <meta property="og:description" content="Have any inquiries? Contact Oracle Development for mining solutions, hosting services, and expert support." />
+  <meta property="og:image" content="https://www.yourdomain.com/assets/images/contact/og-image.jpg" />
+
+  {/* Twitter */}
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://www.yourdomain.com/contact" />
+  <meta property="twitter:title" content="Contact Us - Get in Touch | Oracle Development" />
+  <meta property="twitter:description" content="Have any inquiries? Contact Oracle Development for mining solutions, hosting services, and expert support." />
+  <meta property="twitter:image" content="https://www.yourdomain.com/assets/images/contact/twitter-image.jpg" />
+
+  {/* Canonical URL */}
+  <link rel="canonical" href="https://www.yourdomain.com/contact" />
+
+  {/* Favicon */}
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
+  {/* Structured Data for SEO (JSON-LD Schema) */}
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Oracle Development",
+      "url": "https://www.yourdomain.com/contact",
+      "description": "Reach out to Oracle Development for inquiries on crypto mining, hosting, and expert consultation.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+01234567899",
+        "contactType": "customer service",
+        "email": "hotlinein@gmail.com",
+        "areaServed": "Worldwide",
+        "availableLanguage": ["English", "Spanish"]
+      }
+    })}
+  </script>
+</Head>
+
       <PageBanner pageName={"Contact Us"} />
       <section className="contact-information-one p-r z-1 pt-215 pb-130">
         <div className="information-img_one wow fadeInRight">

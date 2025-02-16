@@ -7,6 +7,7 @@ import { db, auth } from "../src/firebaseConfig";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layouts/Layout";
 import { FaTrash, FaCartPlus } from "react-icons/fa";
+import Link from "next/link";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -80,7 +81,7 @@ const Cart = () => {
 
   // Calculate totals
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  const shippingFee = subtotal > 0 ? 50 : 0;
+  const shippingFee = subtotal > 0 ? 0 : 0;
   const total = subtotal + shippingFee;
 
   if (loading) {
@@ -159,7 +160,9 @@ const Cart = () => {
                     <span>Total:</span> <span>${total.toFixed(2)}</span>
                   </li>
                 </ul>
+                <Link href = '/checkout' >
                 <button className="checkout-btn">Proceed to Checkout</button>
+                </Link>
               </div>
             </>
           ) : (

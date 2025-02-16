@@ -157,11 +157,11 @@ const Checkout = () => {
                   </li>
                   <li className="order-item">
                     <span>Shipping Fee</span>
-                    <span>$50</span>
+                    <span>$0</span>
                   </li>
                   <li className="order-item total">
                     <span>Total</span>
-                    <span>${(subtotal + 50).toFixed(2)}</span>
+                    <span>${(subtotal).toFixed(2)}</span>
                   </li>
                 </ul>
               </div>
