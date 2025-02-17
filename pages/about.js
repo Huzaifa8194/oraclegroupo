@@ -299,7 +299,7 @@ const About = () => {
               {
                 imgSrc: "assets/images/team/team2.jpg",
                 name: "Lorne Harari",
-                position: "Founding partner",
+                position: "Partner",
                 id: "lorne",
               },
               {
@@ -411,7 +411,7 @@ const About = () => {
                       }}
                     />
                     <h4>Lorne Harari</h4>
-                    <p>Founding partner</p>
+                    <p>Partner</p>
                     <ul className="social-link">
                       <li>
                         <a href="#">
@@ -490,7 +490,7 @@ const About = () => {
                     <div className="author-title-qoute d-flex">
                       <div className="author-title">
                         <h4>Lorne Harari</h4>
-                        <p className="position">Founding partner</p>
+                        <p className="position">Partner</p>
                       </div>
                     </div>
                   </div>
