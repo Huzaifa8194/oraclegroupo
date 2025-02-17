@@ -1,68 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { doc, setDoc, collection, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../src/firebaseConfig";
-
 import Layout from "../src/layouts/Layout";
-import { getAuth } from "firebase/auth"; // To get the authenticated user's ID
 
 const Success = () => {
+  const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
+  const { sessionId } = router.query; // PayPal payment ID
 
   useEffect(() => {
-    const saveOrder = async () => {
-      const { session_id } = router.query;
-      const auth = getAuth();
-      const user = auth.currentUser;
-  
-      if (!session_id || !user) {
-        setError("No session ID provided or user not authenticated.");
+    const fetchOrder = async () => {
+      if (!sessionId) {
+        setError("Missing session ID.");
         setLoading(false);
         return;
       }
-  
+
       try {
-        const response = await fetch(`/api/verify-session?session_id=${session_id}`);
-        const { session, lineItems } = await response.json();
-  
-        if (!session || session.payment_status !== "paid") {
-          setError("Payment not successful.");
-          setLoading(false);
-          return;
+        // Retrieve order from Firestore
+        const orderRef = doc(db, "Orders", sessionId);
+        const orderSnap = await getDoc(orderRef);
+
+        if (orderSnap.exists()) {
+          setOrder(orderSnap.data());
+        } else {
+          setError("Order not found.");
         }
-  
-        const billingDetails = session.metadata;
-  
-        const orderRef = doc(collection(db, "Orders"));
-        await setDoc(orderRef, {
-          sessionId: session.id,
-          email: session.customer_email,
-          amount_total: session.amount_total / 100,
-          items: lineItems.map((item) => ({
-            name: item.description,
-            quantity: item.quantity,
-            price: item.price.unit_amount / 100,
-          })),
-          billingDetails, // Save billing details
-          createdAt: new Date().toISOString(),
-        });
-  
-        const userRef = doc(db, "Users", user.uid);
-        await updateDoc(userRef, { cart: [] });
-  
-        setLoading(false);
-      } catch (error) {
-        console.error("Error verifying session or saving order:", error);
-        setError("Failed to process your order.");
+      } catch (err) {
+        console.error("Error fetching order:", err);
+        setError("Failed to retrieve order details.");
+      } finally {
         setLoading(false);
       }
     };
-  
-    saveOrder();
-  }, [router.query]);
-  
+
+    if (sessionId) {
+      fetchOrder();
+    }
+  }, [sessionId]);
 
   return (
     <Layout header={4} footer>
@@ -72,7 +50,7 @@ const Success = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "80vh", // Adjusted for header and footer space
+          minHeight: "80vh",
           padding: "20px",
           backgroundColor: "#f8f9fa",
         }}
@@ -89,43 +67,47 @@ const Success = () => {
           }}
         >
           {loading && (
-            <p
-              style={{
-                fontSize: "1.2em",
-                fontWeight: "bold",
-                color: "#007bff",
-              }}
-            >
-              Processing your order...
+            <p style={{ fontSize: "1.2em", fontWeight: "bold", color: "#007bff" }}>
+              Loading order details...
             </p>
           )}
+
           {error && (
-            <p
-              style={{
-                fontSize: "1.2em",
-                fontWeight: "bold",
-                color: "#dc3545",
-              }}
-            >
-              Error: {error}
+            <p style={{ fontSize: "1.2em", fontWeight: "bold", color: "#dc3545" }}>
+              {error}
             </p>
           )}
-          {!loading && !error && (
+
+          {!loading && !error && order && (
             <div>
-              <h2 style={{ color: "#28a745", marginBottom: "20px" }}>
-                Thank you!
-              </h2>
-              <p
-                style={{
-                  fontSize: "1.1em",
-                  color: "#6c757d",
-                  lineHeight: "1.5",
-                }}
-              >
-                Your order has been placed successfully. Your cart has been
-                cleared. We’ve sent a confirmation email to your inbox. If you
-                have any questions, feel free to contact us.
+              <h2 style={{ color: "#28a745", marginBottom: "20px" }}>Thank You!</h2>
+              <p style={{ fontSize: "1.1em", color: "#6c757d", lineHeight: "1.5" }}>
+                Your order has been successfully placed.
               </p>
+
+              {/* Order Summary */}
+              <h4 style={{ marginTop: "20px", color: "#007bff" }}>Order Summary</h4>
+              <p><strong>Order ID:</strong> {order.sessionId}</p>
+              <p><strong>Total Amount:</strong> ${order.amount_total}</p>
+              <p><strong>Status:</strong> {order.status}</p>
+
+              {/* Billing Details */}
+              <h4 style={{ marginTop: "20px", color: "#007bff" }}>Billing Details</h4>
+              <p><strong>Name:</strong> {order.billingDetails.firstName} {order.billingDetails.lastName}</p>
+              <p><strong>Email:</strong> {order.billingDetails.email}</p>
+              <p><strong>Phone:</strong> {order.billingDetails.phone}</p>
+              <p><strong>Address:</strong> {order.billingDetails.address}, {order.billingDetails.city}, {order.billingDetails.zip}</p>
+
+              {/* Purchased Items */}
+              <h4 style={{ marginTop: "20px", color: "#007bff" }}>Items Purchased</h4>
+              <ul style={{ listStyleType: "none", padding: 0 }}>
+                {order.items.map((item, index) => (
+                  <li key={index} style={{ marginBottom: "5px" }}>
+                    {item.name} - {item.quantity} x ${item.price}
+                  </li>
+                ))}
+              </ul>
+
               <button
                 className="main-btn bordered-btn mt-4"
                 style={{

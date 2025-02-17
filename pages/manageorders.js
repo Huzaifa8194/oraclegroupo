@@ -200,6 +200,27 @@ const ManageOrders = () => {
                         }`
                       )}
                     </p>
+
+
+
+
+                    <p>
+                      <strong>URL:</strong>{" "}
+                      {validateField(
+                        `${order.productUrl || ""} `
+                      )}
+                    </p>
+
+
+                       <p>
+                      <strong>SessionID:</strong>{" "}
+                      {validateField(
+                        `${order.sessionId || ""} `
+                      )}
+                    </p>
+
+
+                
                     <p>
                       <strong>Email:</strong>{" "}
                       {validateField(order.billingDetails?.email)}
@@ -208,9 +229,16 @@ const ManageOrders = () => {
                       <strong>Total:</strong> ${validateField(order.amount_total)}
                     </p>
                     <p>
-                      <strong>First Item:</strong>{" "}
-                      {order.items?.[0]?.name || "N/A"}
-                    </p>
+  <strong>Items:</strong>{" "}
+  {order.items && order.items.length > 0
+    ? order.items.map((item, index) => (
+        <span key={index}>
+          {item.name} (Qty: {item.quantity}){index !== order.items.length - 1 ? ", " : ""}
+        </span>
+      ))
+    : "N/A"}
+</p>
+
                     <p>
                       <strong>Status:</strong> {validateField(order.status)}
                     </p>
