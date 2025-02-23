@@ -20,7 +20,7 @@ const OrgariumCounter = () => {
         <div className="counter-inner">
           <div className="text">
             <h2 className="number">
-              <Counter end={60} />+
+              <Counter end={15} />+
             </h2>
             <p>Years of Experience</p>
           </div>
@@ -40,9 +40,9 @@ const OrgariumCounter = () => {
         <div className="counter-inner">
           <div className="text">
             <h2 className="number">
-              <Counter end={4} />+
+              <Counter end={25} />+
             </h2>
-            <p>Team Members</p>
+            <p>Partners</p>
           </div>
         </div>
       </div>

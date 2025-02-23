@@ -280,7 +280,7 @@ const About = () => {
       </section>{" "} */}
       {/*====== End Partners Section ======*/}
       {/*====== Start Farmers Section ======*/}
-      <section className="farmers-team_two light-gray-bg pb-90">
+      {/* <section className="farmers-team_two light-gray-bg pb-90">
         <div className="container">
           <div className="row align-items-end">
             <div className="col-lg-8">
@@ -386,11 +386,241 @@ const About = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/*====== End Farmers Section ======*/}
 
-      <section className="blog-details-page pt-50 pb-50" id="lorne">
+
+      <section className="blog-details-page pt-50 pb-50" id="saul"  style={{ backgroundColor: "#1F1E17" }}>
+        <div className="container">
+          <div className="row">
+            <div className="col-xl-4 col-lg-5">
+              <div className="sidebar-widget-area">
+                <div className="widget author-widget mb-40 wow fadeInUp">
+                  <div className="author-content">
+                    <img
+                      src="assets/images/team/team1.jpeg"
+                      alt="User Image"
+                      style={{
+                        height: "250px",
+                        width: "200px",
+                        objectFit: "cover",
+                        borderRadius: "2%",
+                      }}
+                    />
+                    <h4>Saul Stricker</h4>
+                    <p> Global Energy Efficiency Strategist</p>
+                    <ul className="social-link">
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-facebook-f" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-twitter" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-linkedin-in" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-youtube" />
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-xl-8 col-lg-7">
+              <div className="blog-details-wrapper mb-40 wow fadeInUp" style={{background: "white"}}>
+                <div className="blog-post-item">
+                  <div className="post-content">
+                    <p style={{ fontSize: "1.3em", color: "black" }}>
+                      With over 60 years of experience in energy efficiency,
+                      power reliability, and technical consulting across 12
+                      countries, Saul Stricker is a trailblazer in developing
+                      innovative solutions for energy optimization and
+                      infrastructure challenges.
+                      <br />
+                      <br />
+                      <strong>Career Highlights</strong>
+                      <br />
+                      Pioneering Interruptible Power Solutions: <br></br>While
+                      working with Ontario Hydro (now Hydro One) in Canada, Saul
+                      played a key role in designing a groundbreaking program
+                      for “interruptible power.” This initiative allowed the
+                      utility to optimize energy usage during off-peak periods
+                      by leveraging surplus hydroelectric power from Niagara
+                      Falls, enabling system expansion and reducing costs.
+                      <br />
+                      <br /> Global Impact in Energy Consulting:
+                      <br />
+                      Saul’s expertise has been sought worldwide. For instance,
+                      he was invited by the National Electric Utility of Egypt
+                      to address widespread blackouts impacting seven
+                      interconnected countries. His strategy to shift major
+                      loads to off-peak hours using interruptible power not only
+                      restored grid stability but also significantly lowered
+                      costs for both utilities and large-scale consumers.
+                      <br />
+                      <br />
+                      Policy Innovation for Energy Efficiency:
+                      <br /> Saul’s work in developing programs such as Canada’s
+                      ENERGUIDE Labeling Program has improved product efficiency
+                      and supported local manufacturing competitiveness. His
+                      ability to align energy strategies with economic growth
+                      makes his expertise particularly valuable in emerging
+                      markets, such as Paraguay, where his solutions could
+                      elevate manufacturing standards and reduce operational
+                      expenses.
+                      <br />
+                      <br />
+                      <strong>Commitment to Service</strong>
+                      <br />
+                      <br />
+                      Beyond his professional achievements, Saul is deeply
+                      committed to giving back to communities and making a
+                      positive impact on humanity. His passion for innovative
+                      energy solutions is matched by his dedication to creating
+                      sustainable and equitable outcomes for people and
+                      businesses alike.
+                      <br />
+                      <br />
+                      Saul Stricker’s legacy is one of leadership, vision, and a
+                      relentless drive to advance energy efficiency on a global
+                      scale.
+                    </p>
+                    <div className="author-title-qoute d-flex">
+                      <div className="author-title">
+                        <h4>Saul Stricker</h4>
+                        <p className="position">
+                          {" "}
+                          Global Energy Efficiency Strategist
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section
+        className="blog-details-page pt-50 pb-50 "
+        id="christopher"
+       
+      >
+        <div className="container">
+          <div className="row">
+            <div className="col-xl-4 col-lg-5">
+              <div className="sidebar-widget-area">
+                <div className="widget author-widget mb-40 wow fadeInUp">
+                  <div className="author-content">
+                    <img
+                      src="assets/images/team/team3.jpeg"
+                      alt="User Image"
+                      style={{
+                        height: "250px",
+                        width: "250px",
+                        objectFit: "contain",
+                        borderRadius: "10%",
+                      }}
+                    />
+                    <h4>Christopher Bregman</h4>
+                    <p>Partner</p>
+                    <ul className="social-link">
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-facebook-f" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-twitter" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-linkedin-in" />
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <i className="fab fa-youtube" />
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-xl-8 col-lg-7">
+              <div
+                className="blog-details-wrapper mb-40 wow fadeInUp"
+                style={{ background: "white" }}
+              >
+                <div className="blog-post-item">
+                  <div className="post-content">
+                    <p style={{ fontSize: "1.3em", color: "black" }}>
+                      Christopher Bregman is a multifaceted professional with a
+                      diverse background in acting, directing, and real estate.
+                      Born and raised in New York City, Christopher has always
+                      been drawn to the world of entertainment and business.
+                      <br />
+                      <br />
+                      As the son of legendary film producer Martin Bregman, who
+                      brought iconic films like Scarface to the big screen,
+                      Christopher grew up surrounded by the excitement and
+                      creativity of the film industry. He has carried on his
+                      family's legacy through his own work in acting and
+                      directing.
+                      <br />
+                      <br />
+                      In addition to his work in entertainment, Christopher has
+                      also established himself as a successful real estate
+                      professional in New York City. His unique blend of
+                      creative vision and business acumen has allowed him to
+                      thrive in both industries.
+                      <br />
+                      <br />
+                      Currently, Christopher is investing in a cutting-edge
+                      Bitcoin mining facility, further expanding his portfolio
+                      and exploring new opportunities in the rapidly evolving
+                      world of cryptocurrency.
+                      <br />
+                      <br />
+                      With his diverse experience, industry connections, and
+                      passion for innovation, Christopher brings a unique
+                      perspective and expertise to the table.
+                    </p>
+                    <div className="author-title-qoute d-flex">
+                      <div className="author-title">
+                        <h4>Christopher Bregman</h4>
+                        <p className="position">Partner</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+      <section className="blog-details-page pt-50 pb-50" id="lorne"  style={{ backgroundColor: "#1F1E17" }}>
         <div className="container">
           <div className="row">
             <div className="col-xl-4 col-lg-5">
@@ -504,7 +734,7 @@ const About = () => {
       <section
         className="blog-details-page pt-50 pb-50"
         id="paul"
-        style={{ backgroundColor: "#1F1E17" }}
+       
       >
         <div className="container">
           <div className="row">
@@ -600,230 +830,9 @@ const About = () => {
         </div>
       </section>
 
-      <section className="blog-details-page pt-50 pb-50" id="saul">
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-4 col-lg-5">
-              <div className="sidebar-widget-area">
-                <div className="widget author-widget mb-40 wow fadeInUp">
-                  <div className="author-content">
-                    <img
-                      src="assets/images/team/team1.jpeg"
-                      alt="User Image"
-                      style={{
-                        height: "250px",
-                        width: "200px",
-                        objectFit: "cover",
-                        borderRadius: "2%",
-                      }}
-                    />
-                    <h4>Saul Stricker</h4>
-                    <p> Global Energy Efficiency Strategist</p>
-                    <ul className="social-link">
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-facebook-f" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-twitter" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-linkedin-in" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-youtube" />
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
+     
 
-            <div className="col-xl-8 col-lg-7">
-              <div className="blog-details-wrapper mb-40 wow fadeInUp">
-                <div className="blog-post-item">
-                  <div className="post-content">
-                    <p style={{ fontSize: "1.3em", color: "black" }}>
-                      With over 60 years of experience in energy efficiency,
-                      power reliability, and technical consulting across 12
-                      countries, Saul Stricker is a trailblazer in developing
-                      innovative solutions for energy optimization and
-                      infrastructure challenges.
-                      <br />
-                      <br />
-                      <strong>Career Highlights</strong>
-                      <br />
-                      Pioneering Interruptible Power Solutions: <br></br>While
-                      working with Ontario Hydro (now Hydro One) in Canada, Saul
-                      played a key role in designing a groundbreaking program
-                      for “interruptible power.” This initiative allowed the
-                      utility to optimize energy usage during off-peak periods
-                      by leveraging surplus hydroelectric power from Niagara
-                      Falls, enabling system expansion and reducing costs.
-                      <br />
-                      <br /> Global Impact in Energy Consulting:
-                      <br />
-                      Saul’s expertise has been sought worldwide. For instance,
-                      he was invited by the National Electric Utility of Egypt
-                      to address widespread blackouts impacting seven
-                      interconnected countries. His strategy to shift major
-                      loads to off-peak hours using interruptible power not only
-                      restored grid stability but also significantly lowered
-                      costs for both utilities and large-scale consumers.
-                      <br />
-                      <br />
-                      Policy Innovation for Energy Efficiency:
-                      <br /> Saul’s work in developing programs such as Canada’s
-                      ENERGUIDE Labeling Program has improved product efficiency
-                      and supported local manufacturing competitiveness. His
-                      ability to align energy strategies with economic growth
-                      makes his expertise particularly valuable in emerging
-                      markets, such as Paraguay, where his solutions could
-                      elevate manufacturing standards and reduce operational
-                      expenses.
-                      <br />
-                      <br />
-                      <strong>Commitment to Service</strong>
-                      <br />
-                      <br />
-                      Beyond his professional achievements, Saul is deeply
-                      committed to giving back to communities and making a
-                      positive impact on humanity. His passion for innovative
-                      energy solutions is matched by his dedication to creating
-                      sustainable and equitable outcomes for people and
-                      businesses alike.
-                      <br />
-                      <br />
-                      Saul Stricker’s legacy is one of leadership, vision, and a
-                      relentless drive to advance energy efficiency on a global
-                      scale.
-                    </p>
-                    <div className="author-title-qoute d-flex">
-                      <div className="author-title">
-                        <h4>Saul Stricker</h4>
-                        <p className="position">
-                          {" "}
-                          Global Energy Efficiency Strategist
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="blog-details-page pt-50 pb-50 "
-        id="christopher"
-        style={{ backgroundColor: "#1F1E17", marginBottom: "0.5px" }}
-      >
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-4 col-lg-5">
-              <div className="sidebar-widget-area">
-                <div className="widget author-widget mb-40 wow fadeInUp">
-                  <div className="author-content">
-                    <img
-                      src="assets/images/team/team3.jpeg"
-                      alt="User Image"
-                      style={{
-                        height: "250px",
-                        width: "250px",
-                        objectFit: "contain",
-                        borderRadius: "10%",
-                      }}
-                    />
-                    <h4>Christopher Bregman</h4>
-                    <p>Partner</p>
-                    <ul className="social-link">
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-facebook-f" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-twitter" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-linkedin-in" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i className="fab fa-youtube" />
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-xl-8 col-lg-7">
-              <div
-                className="blog-details-wrapper mb-40 wow fadeInUp"
-                style={{ background: "white" }}
-              >
-                <div className="blog-post-item">
-                  <div className="post-content">
-                    <p style={{ fontSize: "1.3em", color: "black" }}>
-                      Christopher Bregman is a multifaceted professional with a
-                      diverse background in acting, directing, and real estate.
-                      Born and raised in New York City, Christopher has always
-                      been drawn to the world of entertainment and business.
-                      <br />
-                      <br />
-                      As the son of legendary film producer Martin Bregman, who
-                      brought iconic films like Scarface to the big screen,
-                      Christopher grew up surrounded by the excitement and
-                      creativity of the film industry. He has carried on his
-                      family's legacy through his own work in acting and
-                      directing.
-                      <br />
-                      <br />
-                      In addition to his work in entertainment, Christopher has
-                      also established himself as a successful real estate
-                      professional in New York City. His unique blend of
-                      creative vision and business acumen has allowed him to
-                      thrive in both industries.
-                      <br />
-                      <br />
-                      Currently, Christopher is investing in a cutting-edge
-                      Bitcoin mining facility, further expanding his portfolio
-                      and exploring new opportunities in the rapidly evolving
-                      world of cryptocurrency.
-                      <br />
-                      <br />
-                      With his diverse experience, industry connections, and
-                      passion for innovation, Christopher brings a unique
-                      perspective and expertise to the table.
-                    </p>
-                    <div className="author-title-qoute d-flex">
-                      <div className="author-title">
-                        <h4>Christopher Bregman</h4>
-                        <p className="position">Partner</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* <section className="testimonial-three pt-130 pb-0">
         <div className="container">

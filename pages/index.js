@@ -1051,7 +1051,7 @@ const Index = () => {
                 }}
               >
                 <div className="content-box">
-                  <h2>60+ Years Of Experience in Mining</h2>
+                  <h2>15+ Years Of Experience in Mining</h2>
                 </div>
               </div>
             </div>
@@ -1305,7 +1305,7 @@ const Index = () => {
                     </div>
                     <div className="info">
                       <span className="sub-title mb-1">Location</span>
-                      <h5>55 Main Street, New York</h5>
+                      <h5>Asunción, Paraguay</h5>
                     </div>
                   </div>
                   <div className="information-item_one d-flex mb-25">

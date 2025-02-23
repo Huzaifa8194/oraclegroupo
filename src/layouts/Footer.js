@@ -93,7 +93,7 @@ const DefaultFooter = () => {
                 </div>
                 <div className="text">
                   <h5>Locations</h5>
-                  <h6>55 Main Street, New York</h6>
+                  <h6>Asunción, Paraguay</h6>
                 </div>
               </div>
             </div>

@@ -138,7 +138,7 @@ const Contact = () => {
                       </div>
                       <div className="info">
                         <h5>Locations</h5>
-                        <p>505 Main Street, 2nd Block, New York</p>
+                        <p>Asunción, Paraguay</p>
                       </div>
                     </div>
                   </div>
@@ -194,12 +194,13 @@ const Contact = () => {
       {/*====== Start Map section ======*/} 
       <section className="contact-page-map">
         <div className="map-box">
-          <iframe
-            src="https://maps.google.com/maps?q=new%20york&t=&z=13&ie=UTF8&iwloc=&output=embed"
-            style={{ border: 0, width: "100%", height: "400px" }}
-            allowFullScreen=""
-            loading="lazy"
-          ></iframe>
+        <iframe
+  src="https://maps.google.com/maps?q=Asunción,Paraguay&t=&z=13&ie=UTF8&iwloc=&output=embed"
+  style={{ border: 0, width: "100%", height: "400px" }}
+  allowFullScreen=""
+  loading="lazy"
+></iframe>
+
         </div>
       </section>
       {/*====== End Map section ======*/}
