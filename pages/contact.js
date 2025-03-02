@@ -265,7 +265,7 @@ const Contact = () => {
       {/*====== End Contact Section ======*/}
 
       {/*====== Start Partner Section ======*/} 
-      <section className="partners-one p-r z-1 pt-50 pb-130">
+      {/* <section className="partners-one p-r z-1 pt-50 pb-130">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-6">
@@ -307,7 +307,7 @@ const Contact = () => {
             </div>
           </Slider>
         </div>
-      </section>
+      </section> */}
     </Layout>
   );
 };

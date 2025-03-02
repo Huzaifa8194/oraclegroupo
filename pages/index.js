@@ -1461,7 +1461,7 @@ const Index = () => {
       </section>
       {/*====== End Blog Section ======*/}
       {/*====== Start Partner Section ======*/}
-      <section className="partners-section  pt-50 pb-60 p-r z-1">
+      {/* <section className="partners-section  pt-50 pb-60 p-r z-1">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-xl-6 col-lg-10">
@@ -1529,7 +1529,7 @@ const Index = () => {
             </div>
           </Slider>
         </div>
-      </section>
+      </section> */}
       {/*====== End Partner Section ======*/}
       {/*====== Start Footer ======*/}
 
