@@ -602,7 +602,7 @@ const Index = () => {
                     <FaChartLine />
                   </div>
                   <div className="text">
-                    <h5>Real-Time Market Insights</h5>
+                    <h5>Real Time Market Insights</h5>
                     <p>
                       Delivering up-to-date data for smarter mining decisions.
                     </p>
@@ -784,7 +784,7 @@ const Index = () => {
         </div>
         <div className="shape shape-two">
           <span>
-            <img src="assets/images/shape/tree2.png" alt="" />
+            <img src="assets/images/shape/tree1.png" alt="" />
           </span>
         </div>
         <div className="container">
@@ -833,7 +833,7 @@ const Index = () => {
                 <div className="text">
                   <h3 className="title">
                     <Link href="#">
-                      <a>Real-Time Data Insights</a>
+                      <a>Real-Time Data Insights & Analytics</a>
                     </Link>
                   </h3>
                 </div>
