@@ -183,7 +183,7 @@ const Farmers = () => {
                           <div className="icon"></div>
                           <div className="text">
                             <h2 className="number">
-                              <Counter end={60} />+
+                              <Counter end={15} />+
                             </h2>
                             <p>Years Of Experience</p>
                           </div>
@@ -198,6 +198,18 @@ const Farmers = () => {
                               <Counter end={12} />+
                             </h2>
                             <p>Countries</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6 self-center">
+                        <div className="single-counter-card mb-40 text-left">
+                          <div className="icon"></div>
+                          <div className="text">
+                            <h2 className="number">
+                              <Counter end={25} />+
+                            </h2>
+                            <p>Partners</p>
                           </div>
                         </div>
                       </div>
